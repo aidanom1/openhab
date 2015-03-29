@@ -1,5 +1,8 @@
 package org.openhab.io.context.location;
+import org.openhab.io.context.location.util.*;
+import org.openhab.io.context.primitives.*;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
 import org.openhab.core.service.AbstractActiveService;
@@ -13,21 +16,31 @@ import org.slf4j.LoggerFactory;
 
 import com.google.maps.*;
 import com.google.maps.model.*;
+import com.google.maps.GeocodingApi.ComponentFilter;
+import com.google.maps.model.AddressComponentType;
+import com.google.maps.model.AddressType;
+import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.LocationType;
+import static com.google.maps.GeocodingApi.ComponentFilter.administrativeArea;
+import static com.google.maps.GeocodingApi.ComponentFilter.country;
+
+
 
 public class LocationService extends AbstractActiveService implements ManagedService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LocationService.class);
-	public static final double HOME_LONGITUDE = -8.493444;
-	public static final double HOME_LATITUDE  = 51.876501;
+	public static final double HOME_LONGITUDE = -8.4929821;
+	public static final double HOME_LATITUDE  = 51.8763856;
 	private double longitute;
 	private double latitude;
 	private String locationAsString;
 	private double distanceFromHome;
 	private String username;
-	private GeoApiContext context = null;//new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
+	private GeoApiContext context = null;// new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
 	
-	/** holds the current refresh interval, default to 900000ms (15 minutes) */
-	public static int refreshInterval = 900000;
+	/** holds the current refresh interval, default to  (3 minutes) */
+	public static int refreshInterval = 60000*3;
 	
 
 	/** holds the local quartz scheduler instance */
@@ -35,6 +48,7 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 	
 	public LocationService()
 	{
+		context =  new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
 		logger.debug("org.openhab.core.context.location execute");
 	}
 
@@ -66,19 +80,30 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 
 	@Override
 	protected void execute() {
-		username = "aidan";
+		DistanceMatrix req = null;
+		LocationList ll = new LocationList();
+        ArrayList<User> users = ll.getUsers();
 		logger.debug("org.openhab.core.context.location execute");
-		DistanceMatrix req = DistanceMatrixApi.newRequest(context)
-	        .origins(new LatLng(51.8843400, -8.5340610))
+		for(int i = 0; i < users.size(); i++) {
+			Location l = ll.getUserLocation(users.get(i));
+		try {
+             req = DistanceMatrixApi.newRequest(context)
+	        .origins(new LatLng(l.getLatitude(), l.getLongitude()))
 	        .destinations(new LatLng(HOME_LATITUDE, HOME_LONGITUDE))
-	        .awaitIgnoreError();
-        try {
-        	req.wait();
-        }
-        catch(Exception e) {
-        	logger.debug("org.openhab.core.context.location constructer timeout");
-        }
-        logger.debug("org.openhab.core.context.location constructer"+req.toString());
+	        .await();
+		}
+		catch(Exception e)
+		{
+			logger.debug("org.openhab.core.context.location exception"+e.toString());
+		}
+		
+
+	        logger.debug("org.openhab.core.context.location user "+users.get(i).getName()+"   "
+	                     +req.rows[0].elements[0].distance
+	                     +" "+req.originAddresses[0]);			
+
+		}
+        
 		
 	}
 
