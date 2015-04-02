@@ -14,6 +14,11 @@ import org.openhab.io.context.primitives.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.maps.DistanceMatrixApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.LatLng;
+
 public class LocationList {
     /**
 	 * 
@@ -28,10 +33,14 @@ public class LocationList {
 	private String password = "openhab";
 	private static final Logger logger = LoggerFactory.getLogger(LocationService.class);
 	private Map<String, String> sqlTables = new HashMap<String, String>();
-    
+	private GeoApiContext context = null;// new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
+
 	private Connection connection = null;
 	
-    
+    public LocationList()
+    {
+		context =  new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
+    }
     public ArrayList<User> getUsers() {
     	ArrayList<User> users = new ArrayList<User>();
     	ArrayList<String> tempArrayList = new ArrayList<String>();
@@ -70,24 +79,37 @@ public class LocationList {
     public Location getUserLocation(User u)
     {
     	Location l = new Location();
+		DistanceMatrix req = null;
 		try {
 			logger.debug("LocationList: Attempting to connect to database {}", url);
 			Class.forName(driverClass).newInstance();
 			connection = DriverManager.getConnection(url, "openhab", "openhab");
 			logger.debug("LocationList: Connected to database {}", url);
 			Statement st = connection.createStatement();
-				st = connection.createStatement();
-				String query = "select Time,Value from Item12 where (Value REGEXP '.*"+u.getName()+"$')";
-				logger.debug("LocationList: "+query);
-				ResultSet t = st.executeQuery(query);
-				t.last();
-				String temp = t.getString(2);
-				String[] tempArray = temp.split(",");
-				l.setLatitude(Double.parseDouble(tempArray[0]));
-				l.setLongitude(Double.parseDouble(tempArray[1]));
-				logger.debug("LocationList: adding location "+l);
-				t.close();
-				st.close();
+		    st = connection.createStatement();
+			String query = "select Time,Value from Item12 where (Value REGEXP '.*"+u.getName()+"$')";
+			logger.debug("LocationList: "+query);
+			ResultSet t = st.executeQuery(query);
+			t.last();
+			String temp = t.getString(2);
+			String[] tempArray = temp.split(",");
+			l.setLatitude(Double.parseDouble(tempArray[0]));
+			l.setLongitude(Double.parseDouble(tempArray[1]));
+			try {
+	             req = DistanceMatrixApi.newRequest(context)
+		        .origins(new LatLng(l.getLatitude(), l.getLongitude()))
+		        .destinations(new LatLng(LocationService.HOME_LATITUDE, LocationService.HOME_LONGITUDE))
+		        .await();
+			}
+			catch(Exception e)
+			{
+				logger.debug("org.openhab.core.context.location exception"+e.toString());
+			}
+
+	
+	        l.setLocationAsString(req.originAddresses[0]);
+	        l.setDistanceToHome(req.rows[0].elements[0].distance.inMeters);
+			logger.debug("LocationList: adding location "+l);
 			t.close();
 			st.close();
 		} catch (Exception e) {

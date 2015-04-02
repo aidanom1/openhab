@@ -7,7 +7,10 @@ public class Location {
     private double distanceToHome;
     
     public Location() {
-    	
+        longitude = 0.0;
+        latitude = 0.0;
+        locationAsString = "Limbo";
+        distanceToHome = 0.0;
     }
 	public double getLongitude() {
 		return longitude;
@@ -35,7 +38,31 @@ public class Location {
 	}
   
 	public String toString() {
-		return this.longitude+","+this.latitude;
+		return this.longitude+","+this.latitude+","+distanceToHome+" meters,"+locationAsString;
+	}
+	
+	public double differenceInMeters(Location l)
+	{
+		if(distanceToHome - l.getDistanceToHome() > 0)
+		{
+			return distanceToHome - l.getDistanceToHome();
+		}
+		else
+		{
+			return l.getDistanceToHome() - distanceToHome;
+		}
+	}
+	
+	public boolean equals(Location l)
+	{
+		if(this.latitude == l.getLatitude() && this.longitude == l.getLongitude())
+		{
+			return true;
+		}
+		else {
+			return false;
+		}
+		}
 	}
     
 }

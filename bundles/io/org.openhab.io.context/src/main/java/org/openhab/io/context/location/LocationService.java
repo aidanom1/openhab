@@ -37,7 +37,6 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 	private String locationAsString;
 	private double distanceFromHome;
 	private String username;
-	private GeoApiContext context = null;// new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
 	
 	/** holds the current refresh interval, default to  (3 minutes) */
 	public static int refreshInterval = 60000*3;
@@ -48,7 +47,6 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 	
 	public LocationService()
 	{
-		context =  new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
 		logger.debug("org.openhab.core.context.location execute");
 	}
 
@@ -80,39 +78,23 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 
 	@Override
 	protected void execute() {
-		DistanceMatrix req = null;
 		LocationList ll = new LocationList();
         ArrayList<User> users = ll.getUsers();
 		logger.debug("org.openhab.core.context.location execute");
 		for(int i = 0; i < users.size(); i++) {
 			Location l = ll.getUserLocation(users.get(i));
-		try {
-             req = DistanceMatrixApi.newRequest(context)
-	        .origins(new LatLng(l.getLatitude(), l.getLongitude()))
-	        .destinations(new LatLng(HOME_LATITUDE, HOME_LONGITUDE))
-	        .await();
+            if(users.get(i).setCurrentLocation(l)) // New location!!
+            {
+            	logger.debug("org.openhab.core.context.location new location "+users.get(i));
+            }
 		}
-		catch(Exception e)
-		{
-			logger.debug("org.openhab.core.context.location exception"+e.toString());
-		}
-		
-
-	        logger.debug("org.openhab.core.context.location user "+users.get(i).getName()+"   "
-	                     +req.rows[0].elements[0].distance
-	                     +" "+req.originAddresses[0]);			
-
-		}
-        
-		
 	}
 
 
 	public void updated(Dictionary<String, ?> properties)
 			throws ConfigurationException {
 		logger.debug("org.openhab.core.context.location updated");
-		setProperlyConfigured(true);
-		
+		setProperlyConfigured(true);	
 	}
 
 }
