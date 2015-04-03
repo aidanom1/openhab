@@ -13,10 +13,16 @@
                      activate="activate" 
                      deactivate="deactivate" 
                      immediate="true" 
-                     name="org.openhab.io.context.locationservice">
+                     name="org.openhab.io.context">
    <implementation class="org.openhab.io.context.location.LocationService"/>
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.context"/>
+   <reference bind="setEventPublisher" 
+              cardinality="1..1" 
+              interface="org.openhab.core.events.EventPublisher" 
+              name="EventPublisher" 
+              policy="dynamic" 
+              unbind="unsetEventPublisher"/>
 </scr:component>

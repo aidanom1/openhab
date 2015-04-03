@@ -41,54 +41,18 @@ public class LocationList {
     {
 		context =  new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
     }
-    public ArrayList<User> getUsers() {
-    	ArrayList<User> users = new ArrayList<User>();
-    	ArrayList<String> tempArrayList = new ArrayList<String>();
-    	try {
-			// Reset the error counter           
-			logger.debug("LocationList: Attempting to connect to database {}", url);
-			Class.forName(driverClass).newInstance();
-			connection = DriverManager.getConnection(url, "openhab", "openhab");
-			logger.debug("LocationList: Connected to database {}", url);
 
-			Statement st = connection.createStatement();
-
-			// Turn use of the cursor on.
-			ResultSet rs = st.executeQuery("SELECT * from Item12");
-			while (rs.next()) {
-				String temp = rs.getString("Value");
-				String[] tempArray = temp.split(",");
-				String user = tempArray[tempArray.length-1];
-				if(!tempArrayList.contains(user)) {
-					logger.debug("LocationList: adding user "+user);
-					users.add(new User(user));
-					tempArrayList.add(user);
-				}
-			}
-			rs.close();
-			st.close();
-	} catch (Exception e) {
-		logger.error("LocationList: Failed connecting to the SQL database using: driverClass=" + driverClass + ", url="
-				+ url + ", user=" + user + ", password=" + password, e);
-
-	}
-    	disconnectFromDatabase();
-		return users;
-    }
     
     public Location getUserLocation(User u)
     {
     	Location l = new Location();
 		DistanceMatrix req = null;
 		try {
-			logger.debug("LocationList: Attempting to connect to database {}", url);
 			Class.forName(driverClass).newInstance();
 			connection = DriverManager.getConnection(url, "openhab", "openhab");
-			logger.debug("LocationList: Connected to database {}", url);
 			Statement st = connection.createStatement();
 		    st = connection.createStatement();
 			String query = "select Time,Value from Item12 where (Value REGEXP '.*"+u.getName()+"$')";
-			logger.debug("LocationList: "+query);
 			ResultSet t = st.executeQuery(query);
 			t.last();
 			String temp = t.getString(2);
@@ -109,7 +73,6 @@ public class LocationList {
 	
 	        l.setLocationAsString(req.originAddresses[0]);
 	        l.setDistanceToHome(req.rows[0].elements[0].distance.inMeters);
-			logger.debug("LocationList: adding location "+l);
 			t.close();
 			st.close();
 		} catch (Exception e) {

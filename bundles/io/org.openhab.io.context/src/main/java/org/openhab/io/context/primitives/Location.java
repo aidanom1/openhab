@@ -55,14 +55,14 @@ public class Location {
 	
 	public boolean equals(Location l)
 	{
-		if(this.latitude == l.getLatitude() && this.longitude == l.getLongitude())
+		if(this.distanceToHome == l.getDistanceToHome() && this.locationAsString.equalsIgnoreCase(l.getLocationAsString()))
 		{
 			return true;
 		}
 		else {
 			return false;
 		}
-		}
+		
 	}
     
 }
