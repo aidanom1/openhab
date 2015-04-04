@@ -1,6 +1,6 @@
 package org.openhab.io.context.primitives;
 
-import org.openhab.io.context.location.LocationService;
+import org.openhab.io.context.LocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

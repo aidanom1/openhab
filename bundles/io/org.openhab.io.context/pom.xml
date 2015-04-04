@@ -19,5 +19,6 @@
   <name>openHAB Contextual Awareness</name>
 
   <packaging>eclipse-plugin</packaging>
-
+  
+  
 </project>

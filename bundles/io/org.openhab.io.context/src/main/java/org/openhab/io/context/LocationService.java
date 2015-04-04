@@ -1,9 +1,10 @@
-package org.openhab.io.context.location;
-import org.openhab.io.context.location.util.*;
+package org.openhab.io.context;
+import org.openhab.io.context.location.*;
 import org.openhab.io.context.primitives.*;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.openhab.core.service.AbstractActiveService;
@@ -23,6 +24,7 @@ import com.google.maps.model.AddressType;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.LocationType;
+import org.openhab.io.context.activity.*;
 import static com.google.maps.GeocodingApi.ComponentFilter.administrativeArea;
 import static com.google.maps.GeocodingApi.ComponentFilter.country;
 
@@ -104,6 +106,9 @@ public class LocationService extends AbstractActiveService implements ManagedSer
             }
 		}
 		setProperlyConfigured(true);	
+		logger.debug("org.openhab.core.context.location before getUserToken");
+		OAuth2Util.UserToken u = OAuth2Util.getUserToken(new Properties());
+		logger.debug("org.openhab.core.context.location after getUserToken");
 	}
 
 }
