@@ -49,25 +49,21 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 		if(users == null) {
 		    users = new ArrayList<User>();
 		}
-		logger.debug("org.openhab.core.context.location constructor");
 	}
 
 
 	@Override
 	protected long getRefreshInterval() {
-		logger.debug("org.openhab.core.context.location getRefreshInterval");
 		return refreshInterval;
 	}
 
 	@Override
 	protected String getName() {
-		logger.debug("org.openhab.core.context.location getName");
 		return "Context Aware Location Service";
 	}
 	
 	@Override
 	public void activate() {
-		logger.debug("org.openhab.core.context.location activate");
         try {
             scheduler = StdSchedulerFactory.getDefaultScheduler();
             super.activate();
@@ -80,15 +76,9 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 
 	@Override
 	protected void execute() {
-		LocationList ll = new LocationList();
 		logger.debug("org.openhab.core.context.location execute");
 		for(int i = 0; i < users.size(); i++) {
-			Location l = ll.getUserLocation(users.get(i));
-            if(users.get(i).setCurrentLocation(l)) // New location!!
-            {
-            	//eventPublisher.postUpdate(itemName, state);
-            	logger.debug("org.openhab.core.context.location new location "+users.get(i));
-            }
+			users.get(i).updateContext();
 		}
 	}
 
@@ -99,16 +89,19 @@ public class LocationService extends AbstractActiveService implements ManagedSer
 		if(users != null && config != null)
 		{
 	        String[] st = ((String) config.get("users")).split(",");
+	        String[] emails = ((String) config.get("emails")).split(",");
+			//String[] st = {"aidan","aileen"};
+			//String[] emails = {"aidan.omahony@gmail.com","aileenmorelly@gmail.com"};
 	        for(int i = 0; i < st.length; i++)
             {
-                users.add(new User(st[i]));          		
+                users.add(new User(st[i],emails[i]));
         		//TODO should check if adding duplicates
             }
 		}
 		setProperlyConfigured(true);	
-		logger.debug("org.openhab.core.context.location before getUserToken");
+		//logger.debug("org.openhab.core.context.location before getUserToken");
 		OAuth2Util.UserToken u = OAuth2Util.getUserToken(new Properties());
-		logger.debug("org.openhab.core.context.location after getUserToken");
+		//logger.debug("org.openhab.core.context.location after getUserToken");
 	}
 
 }

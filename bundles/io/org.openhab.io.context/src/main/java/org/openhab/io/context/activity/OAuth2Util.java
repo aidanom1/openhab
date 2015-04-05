@@ -104,7 +104,7 @@ public class OAuth2Util {
                                 // Important! Display data in the log.  Users need this to authorize the service.
                                 logger.info("\n\nAuthorize openHAB Context Aware Services to use your Google account to access calendar data\n" +
                                                 "Visit " + token.verificationUrl + " and enter user code " +
-                                                token.userCode + "\n\nThanks!! Love Aidan");
+                                                token.userCode + "\n\nThanks!!");
                                
                         } catch (IOException ioe) {
                                 logger.error("Failed to get user code from response", ioe);

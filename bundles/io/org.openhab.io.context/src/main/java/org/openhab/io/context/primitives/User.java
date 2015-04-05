@@ -8,10 +8,15 @@ public class User {
 	private static final Logger logger = LoggerFactory.getLogger(LocationService.class);
     private Context currentContext;
     private String name;
-    private Location currentLocation;
-    public User(String name)
+    private String email;
+    public User(String name, String email)
     {
     	this.name = name;
+    	this.email = email;
+    	ContextGenerator c =  ContextGenerator.getInstance();
+    	currentContext = c.getCurrentContext(this);
+    	logger.debug(currentContext.toString());
+    	
     }
 	public String getName() {
 		return name;
@@ -26,30 +31,21 @@ public class User {
 		this.currentContext = currentContext;
 	}
 	
-	/*
-	 * Set current location - no need to do this if we have moved less than 5 meters from our last location
-	 */
-	public Boolean setCurrentLocation(Location currentLocation) {
-		if(this.currentLocation == null)
-		{
-			this.currentLocation = currentLocation;
-		    return true;
-		}
-		if(currentLocation == null)
-		{
-		    return false;
-		}
-		if(!currentLocation.equals(this.currentLocation) &&
-				currentLocation.differenceInMeters(this.currentLocation) > 5)
-		{
-			this.currentLocation = currentLocation;
+	public boolean updateContext()
+	{
+		ContextGenerator c =  ContextGenerator.getInstance();
+		Context t = c.getCurrentContext(this);
+		if(!currentContext.equalsIgnoreTime(t)) {
+			logger.debug(t.toString());
+			currentContext = t; // New context!!
 			return true;
 		}
-		return false;
+		return false; // no new context
 	}
 	
+
 	public String toString()
 	{
-		return name+" "+currentLocation;
+		return name+" :"+email;
 	}
 }

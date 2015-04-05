@@ -53,9 +53,11 @@ public class LocationList {
 			Statement st = connection.createStatement();
 		    st = connection.createStatement();
 			String query = "select Time,Value from Item12 where (Value REGEXP '.*"+u.getName()+"$')";
+			logger.debug(query);
 			ResultSet t = st.executeQuery(query);
 			t.last();
 			String temp = t.getString(2);
+			logger.debug(temp);
 			String[] tempArray = temp.split(",");
 			l.setLatitude(Double.parseDouble(tempArray[0]));
 			l.setLongitude(Double.parseDouble(tempArray[1]));
@@ -108,7 +110,7 @@ public class LocationList {
 	      } else if (unit == 'N') {
 	        dist = dist * 0.8684;
 	        }
-	      return (dist);
+	      return (Math.round(dist));
 	    }
 
 	    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
