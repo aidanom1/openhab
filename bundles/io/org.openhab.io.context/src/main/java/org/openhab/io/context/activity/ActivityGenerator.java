@@ -14,38 +14,29 @@
 
 package org.openhab.io.context.activity;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.batch.BatchRequest;
-import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.googleapis.json.GoogleJsonError;
-import com.google.api.client.http.HttpHeaders;
+
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.calendar.CalendarScopes;
-import com.google.api.services.calendar.model.Calendar;
-import com.google.api.services.calendar.model.CalendarList;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.google.api.services.calendar.model.Events;
 
+import com.google.api.services.calendar.model.Calendar;
+
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Properties;
-import java.util.TimeZone;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import org.openhab.io.context.LocationService;
+
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.*; 
+import org.openhab.io.context.ContextService;
 import org.openhab.io.context.activity.OAuth2Util.UserToken;
 import org.openhab.io.context.primitives.*;
 import org.slf4j.Logger;
@@ -55,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author Yaniv Inbar
  */
 public class ActivityGenerator {
-	private static final Logger logger = LoggerFactory.getLogger(LocationService.class);
+	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
   /**
    * Be sure to specify the name of your application. If the application name is {@code null} or
    * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
@@ -84,23 +75,83 @@ public class ActivityGenerator {
   
   private User user;
   private UserToken u;
+  private net.fortuna.ical4j.model.Calendar calendar = null;
   
-  
-
+  private boolean isinit = false;
+  private CalendarConfigurationImpl t;
   /** Authorizes the installed application to access user's protected data. */
   public ActivityGenerator()
   {
-	  //u = OAuth2Util.getUserToken(new Properties()); 
-	
-	  //Calendar m= new Calendar();
-	  //CalendarFeed c = new CalendarFeed();
-	  //logger.debug(u.toString());
+	  
+	  try {
+		  t = new CalendarConfigurationImpl();
+		  t.initialize();
+		  if(t.isConfiguredCorrectly()) {
+			  isinit = true;
+		  }
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
+	  
+			 
+      
+  }
+  
+  private BufferedReader getURL(String URL)
+  {
+	  URL oracle = null;
+	  String returnVal = "";
+	try {
+		oracle = new URL(URL);
+	} catch (MalformedURLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+      BufferedReader in = null;
+	try {
+		in = new BufferedReader(
+		  new InputStreamReader(oracle.openStream()));
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    return in;
+    /*
+      String inputLine = null;
+      try {
+    	  char temp = (char) -3;
+		while ((inputLine = in.readLine()) != null) {
+			returnVal+='\r'+inputLine;
+		}
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+      try {
+		in.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+      return returnVal;
+      */
   }
 
   public Activity getUserActivity(User u) {
 	  // TODO Auto-generated method stub
+	  
 	  return new Activity();
   }
+
+public boolean initialised() {
+	// TODO Auto-generated method stub
+	return false;
+}
   
   
 

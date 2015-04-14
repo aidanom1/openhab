@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.openhab.io.context.LocationService;
+import org.openhab.io.context.ContextService;
 import org.openhab.io.context.primitives.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class LocationList {
 	private String url = "jdbc:mysql://127.0.0.1:3306/openhab";
 	private String user = "openhab";
 	private String password = "openhab";
-	private static final Logger logger = LoggerFactory.getLogger(LocationService.class);
+	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
 	private Map<String, String> sqlTables = new HashMap<String, String>();
 	private GeoApiContext context = null;// new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
 
@@ -64,7 +64,7 @@ public class LocationList {
 			try {
 	             req = DistanceMatrixApi.newRequest(context)
 		        .origins(new LatLng(l.getLatitude(), l.getLongitude()))
-		        .destinations(new LatLng(LocationService.HOME_LATITUDE, LocationService.HOME_LONGITUDE))
+		        .destinations(new LatLng(ContextService.HOME_LATITUDE, ContextService.HOME_LONGITUDE))
 		        .await();
 			}
 			catch(Exception e)
@@ -74,7 +74,7 @@ public class LocationList {
 
 
 	        l.setLocationAsString(req.originAddresses[0]);
-	        l.setDistanceToHome(distance(l.getLatitude(),l.getLongitude(),LocationService.HOME_LATITUDE,LocationService.HOME_LONGITUDE,'K'));;
+	        l.setDistanceToHome(distance(l.getLatitude(),l.getLongitude(),ContextService.HOME_LATITUDE,ContextService.HOME_LONGITUDE,'K'));;
 			t.close();
 			st.close();
 		} catch (Exception e) {

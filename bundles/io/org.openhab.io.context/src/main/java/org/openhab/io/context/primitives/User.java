@@ -1,11 +1,12 @@
 package org.openhab.io.context.primitives;
 
-import org.openhab.io.context.LocationService;
+import org.openhab.io.context.ContextGenerator;
+import org.openhab.io.context.ContextService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class User {
-	private static final Logger logger = LoggerFactory.getLogger(LocationService.class);
+	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
     private Context currentContext;
     private String name;
     private String email;

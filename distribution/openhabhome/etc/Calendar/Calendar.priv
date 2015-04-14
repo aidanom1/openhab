@@ -1,0 +1,10 @@
+#Google Calendar persistence
+#Sat Apr 11 15:53:13 IST 2015
+user_code=LEAA-ZXAL
+interval=5
+expires_in=3600
+refresh_token=1/75d3ULtbblAiugHJfkMd8-0SMN0pSIdWb2uNT_W4ezcMEudVrK5jSpoR30zcRFq6
+verification_url=https\://www.google.com/device
+token_type=Bearer
+device_code=LEAA-ZXAL4/jRfudZN99eIH0JDBnhSwFEUZUBIbSbbclKwpi_ah6eg
+access_token=ya29.UgFGFNyxIndq5TvhWcsI_b2LWoUxXuOb5Z33ICiiCquFCSeoTNnA0y6ojVrRhYhYYvk1ywsivSxYZA
