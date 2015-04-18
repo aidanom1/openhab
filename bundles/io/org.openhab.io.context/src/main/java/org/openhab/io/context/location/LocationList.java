@@ -45,6 +45,7 @@ public class LocationList {
     
     public Location getUserLocation(User u)
     {
+    	logger.debug("getUserLocation("+u.getName()+")");
     	Location l = new Location();
 		DistanceMatrix req = null;
 		try {

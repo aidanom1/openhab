@@ -14,7 +14,7 @@
                      deactivate="deactivate" 
                      immediate="true" 
                      name="org.openhab.io.context">
-   <implementation class="org.openhab.io.context.LocationService"/>
+   <implementation class="org.openhab.io.context.ContextService"/>
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>

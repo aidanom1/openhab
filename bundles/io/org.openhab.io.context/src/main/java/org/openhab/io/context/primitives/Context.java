@@ -24,6 +24,8 @@ public class Context {
 	public Context(User u)
 	{
 		user = u;
+		location = new Location();
+		activity = new Activity();
 	}
 
 	public Location getLocation()
@@ -64,6 +66,7 @@ public class Context {
 
 	public boolean equalsIgnoreTime(Context c)
 	{
+		// sanity check
 		if(user.equals(c.getUser()) &&
 				location.equals(c.getLocation()) &&
 				activity.equals(c.getActivity()))
@@ -76,7 +79,7 @@ public class Context {
 	}
 
 
-	private Activity getActivity() {
+	public Activity getActivity() {
 		return activity;
 	}
 	

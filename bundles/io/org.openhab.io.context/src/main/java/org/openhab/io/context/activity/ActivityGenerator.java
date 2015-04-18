@@ -22,7 +22,10 @@ import com.google.api.client.util.Lists;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
+import com.google.api.services.calendar.Calendar.Events;
 import com.google.api.services.calendar.model.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 
 
 import java.io.BufferedReader;
@@ -31,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -89,14 +93,10 @@ public class ActivityGenerator {
 		  if(t.isConfiguredCorrectly()) {
 			  isinit = true;
 		  }
-	} catch (FileNotFoundException e) {
+	} catch (Exception e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		logger.debug("org.openhab.core.context.activity "+e.toString());
 	}
-	  
 	  
 			 
       
@@ -110,7 +110,7 @@ public class ActivityGenerator {
 		oracle = new URL(URL);
 	} catch (MalformedURLException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		logger.debug("org.openhab.core.context.activity "+e.toString());
 	}
       BufferedReader in = null;
 	try {
@@ -118,7 +118,7 @@ public class ActivityGenerator {
 		  new InputStreamReader(oracle.openStream()));
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		logger.debug("org.openhab.core.context.activity "+e.toString());
 	}
     return in;
     /*
@@ -144,13 +144,24 @@ public class ActivityGenerator {
 
   public Activity getUserActivity(User u) {
 	  // TODO Auto-generated method stub
-	  
-	  return new Activity();
+	  com.google.api.services.calendar.model.Events e = t.getUserEvents(u);
+	  Activity a = new Activity();
+	  if(e == null) return a;
+	  List<Event> items = e.getItems();
+		for(Event event: items) {
+			EventDateTime start = event.getStart();
+			EventDateTime end = event.getEnd();
+			if(start.getDateTime().getValue() <= System.currentTimeMillis() && end.getDateTime().getValue() > System.currentTimeMillis()) {
+				a.setDescription(event.getDescription());
+				a.setSummary(event.getSummary());
+			}
+			logger.debug(event.getSummary());
+		}
+	  return a;
   }
 
 public boolean initialised() {
-	// TODO Auto-generated method stub
-	return false;
+	return isinit;
 }
   
   

@@ -11,12 +11,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.io.context.activity.OAuth2Util.AccessToken;
 import org.openhab.io.context.activity.OAuth2Util.UserToken;
+import org.openhab.io.context.primitives.User;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.quartz.JobExecutionContext;
@@ -31,7 +34,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.*;
-import com.google.api.services.calendar.Calendar.CalendarList;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.*;
 import com.google.gdata.client.GoogleService;
 
 import com.google.gdata.util.ServiceException;
@@ -65,7 +69,7 @@ public class CalendarConfigurationImpl implements  JobListener {
         private static final String CRED_FILE_NAME = "Calendar.priv";
         private File authStateFile = new File(CRED_FOLDER_NAME + File.separator + CRED_FILE_NAME);
        
-
+        private CalendarList feed;
         
         /** Google Calendar filename prefix. */
         private String prefix;
@@ -152,6 +156,41 @@ public class CalendarConfigurationImpl implements  JobListener {
         private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
         private static com.google.api.services.calendar.Calendar client;
+        
+        public CalendarList getCalendarList() {
+        	return feed;
+        }
+        
+        public Events getUserEvents(User u)
+        {
+        	String calendarName = "openHAB_"+u.getName();
+        	String calendarId = null;
+        	String pageToken = null;
+        	Events events = null;
+        	List<CalendarListEntry> listItems = feed.getItems();
+        	for(CalendarListEntry entry : listItems) {
+        		if(entry.getSummary().equals(calendarName)) {
+        			calendarId = entry.getId();
+        		}
+        	}
+        	if(calendarId == null) {
+        		return null;
+        	}
+           try {
+			events = client.events().list(calendarId).setPageToken(pageToken).execute();
+			List<Event> items = events.getItems();
+			for(Event event: items) {
+				logger.debug(event.getSummary());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			logger.debug(e.toString());
+		}
+           return events;
+           
+        		
+        	
+        }
 
         /**
          * initialize the configuration by verifying and if needed requesting tokens.  This
@@ -210,7 +249,8 @@ public class CalendarConfigurationImpl implements  JobListener {
                         try {                  
                                
                                 // If we can get this feed, we're got to go.                            
-                        	com.google.api.services.calendar.model.CalendarList feed = client.calendarList().list().execute();
+                        	feed = client.calendarList().list().execute();
+
 
                                 logger.debug("Authentication succeeded.  We're good to go.");
                                 initialized = true;

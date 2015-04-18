@@ -86,15 +86,16 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException
 	{
 		logger.debug("org.openhab.core.context.location updated");
-		if(users != null)// && config != null)
+		if(users != null && config != null)
 		{
-	        //String[] st = ((String) config.get("users")).split(",");
-	        //String[] emails = ((String) config.get("emails")).split(",");
-			String[] st = {"aidan","aileen"};
-			String[] emails = {"aidan.omahony@gmail.com","aileenmorelly@gmail.com"};
+	        String[] st = ((String) config.get("users")).split(",");
+	        String[] emails = ((String) config.get("emails")).split(",");
+			//String[] st = {"aidan","aileen"};
+			//String[] emails = {"aidan.omahony@gmail.com","aileenmorelly@gmail.com"};
 	        for(int i = 0; i < st.length; i++)
             {
-                users.add(new User(st[i],emails[i]));
+	        	User temp = new User(st[i],emails[i]);
+                users.add(temp);
         		//TODO should check if adding duplicates
             }
 		}

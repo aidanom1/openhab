@@ -16,7 +16,7 @@ public class ContextGenerator {
 	private ActivityGenerator a;
 	
 	private ContextGenerator() {
-		//l = new LocationList();
+		l = new LocationList();
 		a = new ActivityGenerator();
 	}
 	
@@ -48,8 +48,7 @@ public class ContextGenerator {
 	{
 		Context c = new Context(u); // Name set
 		c.setDate(Calendar.getInstance()); // Time set
-		//c.setLocation(l.getUserLocation(u));
-		c.setLocation(new Location());
+		c.setLocation(l.getUserLocation(u));
 		c.setActivity(a.getUserActivity(u));
 		
 		return c;

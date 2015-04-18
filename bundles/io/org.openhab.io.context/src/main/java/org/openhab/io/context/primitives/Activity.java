@@ -4,7 +4,7 @@ public class Activity {
     private String activity = "Nothing yet";
     
     public String toString() {
-    	return activity;
+    		return activity;
     }
     
     public boolean equals(Activity a)
@@ -16,4 +16,20 @@ public class Activity {
     		return false;
     	}
     }
+
+	public void setDescription(String description) {
+		// TODO Auto-generated method stub
+		if(activity.equals("Nothing yet"))
+		activity = description+=" : ";
+		else
+			activity += description+= " : ";
+		
+	}
+
+	public void setSummary(String summary) {
+		// TODO Auto-generated method stub
+		activity+=  summary;
+	}
+    
+    
 }
