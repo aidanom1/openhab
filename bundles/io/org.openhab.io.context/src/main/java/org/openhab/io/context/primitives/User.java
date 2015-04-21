@@ -1,17 +1,24 @@
 package org.openhab.io.context.primitives;
 
+
+import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.events.*;
+import org.openhab.core.library.types.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+
 
 import org.openhab.io.context.ContextGenerator;
 import org.openhab.io.context.ContextService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class User {
+public class User extends AbstractBinding  {
 	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
+
     private Context currentContext;
     private String name;
     private String email;
@@ -42,17 +49,24 @@ public class User {
 	{
 		logger.debug("Updaing context");
 		ContextGenerator c =  ContextGenerator.getInstance();
-		assert(c != null);
-		Context t = c.getCurrentContext(this);
-		assert(t != null);
-		assert(currentContext != null);
-		if(!currentContext.equalsIgnoreTime(t)) {
-			logger.debug(t.toString());
-			currentContext = t; // New context!!
-			logContext(t);
+		Context newContext = c.getCurrentContext(this);
+		if(!currentContext.equalsIgnoreTime(newContext)) {
+			logger.info(newContext.toString());
+		    if(currentContext.getLocation().getDistanceToHome() < 20
+		    		&& newContext.getLocation().getDistanceToHome() >= 20) // NOT_AT_HOME
+		    {
+		    	eventPublisher.postUpdate(name,ContextType.NOT_AT_HOME);
+		    }
+		    else if(currentContext.getLocation().getDistanceToHome() >= 20
+		    		&& newContext.getLocation().getDistanceToHome() < 20) // AT_HOME
+		    {
+		    	eventPublisher.postUpdate(name,ContextType.AT_HOME);
+		    }
+		    currentContext = newContext; // New context!!
+			logContext(newContext); 
 			return true;
 		} else{
-			logger.debug(name+" no update : distance to home is "+t.getLocation().getDistanceToHome());
+			logger.info(name+" no update : distance to home is "+newContext.getLocation().getDistanceToHome());
 			return false; // no new context
 		}
 
@@ -76,6 +90,7 @@ public class User {
 		if(c.getLocation() == null) return;
 		if(c.getDate() == null) return;
 		if(c.getUser() == null) return;
+		SimpleDateFormat f = new SimpleDateFormat("EEE HH:mm:ss dd/MM/yyyy");
 		try {
 			Class.forName(driverClass).newInstance();
 		    connection = DriverManager.getConnection(url, "openhab", "openhab");
@@ -84,7 +99,7 @@ public class User {
 	       
 	        String query = "insert into context (user,time,location,activity) values ('"+
 	                           c.getUser().toString()+"','"+
-	        		           c.getDate().getTimeInMillis()+"','"+
+	        		           f.format(c.getDate().getTime())+"','"+
 	                           c.getLocation().toString()+"','"+
 	        		           c.getActivity().toString()+"');";
 			logger.debug(query);
@@ -95,4 +110,5 @@ public class User {
 			logger.debug("Error writing context to database "+e.toString());
 		}
 	}
+
 }

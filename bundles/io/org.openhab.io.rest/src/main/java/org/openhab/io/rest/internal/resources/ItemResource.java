@@ -8,6 +8,9 @@
  */
 package org.openhab.io.rest.internal.resources;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -203,11 +206,54 @@ public class ItemResource {
     		}
     	} else {
     		logger.info("Received HTTP POST request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
+    		writeValue(value);
     		throw new WebApplicationException(404);
     	}
 	}
+	private String driverClass = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://127.0.0.1:3306/openhab";
+	private String user = "openhab";
+	private String password = "openhab";
+	private Connection connection = null;
+    private void writeValue(String value) {
+		String sqlCmd = null;
+		Statement statement = null;
+		try {
+			logger.debug("1");
+			Class.forName(driverClass).newInstance();
+			logger.debug("2");
+		    connection = DriverManager.getConnection(url, "openhab", "openhab");
+		    logger.debug("3");
+			statement = connection.createStatement();
+			logger.debug("4");
+			sqlCmd = new String("INSERT INTO " + "Item12" + " (TIME, VALUE) VALUES(NOW(),'"
+					+ value + "') ON DUPLICATE KEY UPDATE VALUE='"
+					+ value + "';");
+			statement.executeUpdate(sqlCmd);
+            statement.close();
+			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", "Location", value
+					.toString(), value, (new java.util.Date()).toString());
+			logger.debug("mySQL: {}", sqlCmd);
 
-    public static ItemBean createItemBean(Item item, boolean drillDown, String uriPath) {
+			// Success
+			//errCnt = 0;
+		} catch (Exception e) {
+			//errCnt++;
+
+			logger.error("mySQL: Could not store item '{}' in database with statement '{}': {}", value,
+					sqlCmd, e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (Exception hidden) {
+				}
+			}
+		}
+		
+	}
+
+	public static ItemBean createItemBean(Item item, boolean drillDown, String uriPath) {
     	ItemBean bean;
     	if(item instanceof GroupItem && drillDown) {
     		GroupItem groupItem = (GroupItem) item;

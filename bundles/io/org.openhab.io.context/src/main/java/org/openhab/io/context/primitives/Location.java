@@ -55,7 +55,7 @@ public class Location {
 	
 	public boolean equals(Location l)
 	{
-		if((this.differenceInMeters(l) < 5) && (this.locationAsString.equalsIgnoreCase(l.getLocationAsString())))
+		if((this.differenceInMeters(l) < 10) && (this.locationAsString.equalsIgnoreCase(l.getLocationAsString())))
 		{
 			return true;
 		}

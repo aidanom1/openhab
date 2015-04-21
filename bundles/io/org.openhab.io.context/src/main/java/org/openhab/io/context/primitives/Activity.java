@@ -20,15 +20,19 @@ public class Activity {
 	public void setDescription(String description) {
 		// TODO Auto-generated method stub
 		if(activity.equals("Nothing yet"))
-		activity = description+=" : ";
+		    activity = description+=" : ";
 		else
 			activity += description+= " : ";
 		
 	}
 
 	public void setSummary(String summary) {
+		
 		// TODO Auto-generated method stub
-		activity+=  summary;
+		if(activity.equals("Nothing yet"))
+		    activity = summary+=" : ";
+		else
+			activity += summary+= " : ";
 	}
     
     

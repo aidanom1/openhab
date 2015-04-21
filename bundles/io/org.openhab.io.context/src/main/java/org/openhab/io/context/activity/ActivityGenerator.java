@@ -152,8 +152,10 @@ public class ActivityGenerator {
 			EventDateTime start = event.getStart();
 			EventDateTime end = event.getEnd();
 			if(start.getDateTime().getValue() <= System.currentTimeMillis() && end.getDateTime().getValue() > System.currentTimeMillis()) {
-				a.setDescription(event.getDescription());
-				a.setSummary(event.getSummary());
+				if(event.getDescription() != null)
+				    a.setDescription(event.getDescription());
+				if(event.getSummary() != null)
+				    a.setSummary(event.getSummary());
 			}
 			logger.debug(event.getSummary());
 		}
