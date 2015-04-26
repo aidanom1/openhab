@@ -7,6 +7,7 @@ import java.util.Dictionary;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.openhab.core.events.EventPublisher;
 import org.openhab.core.service.AbstractActiveService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -16,29 +17,29 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.maps.*;
-import com.google.maps.model.*;
-import com.google.maps.GeocodingApi.ComponentFilter;
-import com.google.maps.model.AddressComponentType;
-import com.google.maps.model.AddressType;
-import com.google.maps.model.GeocodingResult;
-import com.google.maps.model.LatLng;
-import com.google.maps.model.LocationType;
-import org.openhab.io.context.activity.*;
-import static com.google.maps.GeocodingApi.ComponentFilter.administrativeArea;
-import static com.google.maps.GeocodingApi.ComponentFilter.country;
-
-
 
 public class ContextService extends AbstractActiveService implements ManagedService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
-	public static final double HOME_LONGITUDE = -8.4929821;
-	public static final double HOME_LATITUDE  = 51.8763856;
+	public static double HOME_LONGITUDE = -8.493406;
+	public static double HOME_LATITUDE  = 51.876496;
+	public static boolean DEMO_MODE = false;
 	
 	/** holds the current refresh interval, default to  (3 minutes) */
 	public static int refreshInterval = 60000*1;
 	private static ArrayList<User> users = null;
+	
+	private EventPublisher eventPublisher = null;
+	
+	
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
+
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = null;
+	}
+	
 	
 
 	/** holds the local quartz scheduler instance */
@@ -86,6 +87,21 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException
 	{
 		logger.debug("org.openhab.core.context.location updated");
+		if(Boolean.parseBoolean(((String) config.get("demo_mode")))) {
+			ContextService.DEMO_MODE = true;
+			ContextService.refreshInterval = 5000;
+		}
+		String[] ht = ((String) config.get("home")).split(",");
+		User.radius = Integer.parseInt((String)config.get("radius"));
+		try {
+			
+		    ContextService.HOME_LATITUDE = Double.parseDouble(ht[0]); 
+		    ContextService.HOME_LONGITUDE = Double.parseDouble(ht[1]); 
+		    logger.info(Double.toString(ContextService.HOME_LATITUDE)+","+Double.toString(ContextService.HOME_LONGITUDE));
+		}
+		catch(Exception e) {
+			logger.info("Forgot to set location, no worries, we can pretend we're at home! "+e);
+		}
 		if(users != null && config != null)
 		{
 	        String[] st = ((String) config.get("users")).split(",");
@@ -94,15 +110,12 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 			//String[] emails = {"aidan.omahony@gmail.com","aileenmorelly@gmail.com"};
 	        for(int i = 0; i < st.length; i++)
             {
-	        	User temp = new User(st[i],emails[i]);
+	        	User temp = new User(st[i],emails[i], eventPublisher);
                 users.add(temp);
         		//TODO should check if adding duplicates
             }
 		}
 		setProperlyConfigured(true);	
-		//logger.debug("org.openhab.core.context.location before getUserToken");
-		//OAuth2Util.UserToken u = OAuth2Util.getUserToken(new Properties());
-		//logger.debug("org.openhab.core.context.location after getUserToken");
 	}
 
 }

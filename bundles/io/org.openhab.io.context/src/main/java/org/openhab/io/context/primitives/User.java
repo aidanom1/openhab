@@ -13,38 +13,67 @@ import java.text.SimpleDateFormat;
 
 import org.openhab.io.context.ContextGenerator;
 import org.openhab.io.context.ContextService;
+//import org.openhab.io.rest.RESTApplication;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class User extends AbstractBinding  {
+import org.slf4j.LoggerFactory;;
+public class User {
 	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
 
-    private Context currentContext;
+    private Context currentContext = null;;
     private String name;
     private String email;
-    public User(String name, String email)
+    public static int radius;
+    
+    protected EventPublisher eventPublisher;
+    public User(String name, String email, EventPublisher eventPublisher2)
     {
     	this.name = name;
     	this.email = email;
+    	this.eventPublisher = eventPublisher2;
     	ContextGenerator c =  ContextGenerator.getInstance();
     	currentContext = c.getCurrentContext(this);
+
+    	if(currentContext.getLocation().getDistanceToHome() < radius) {
+    		eventPublisher.postUpdate(name,ContextType.AT_HOME);
+    		updateContext("AT_HOME");
+    	}
+    	else {
+    		eventPublisher.postUpdate(name,ContextType.NOT_AT_HOME);
+    		updateContext("NOT_AT_HOME");
+    	}
     	logContext(currentContext);
-    	logger.debug(currentContext.toString());
     	
     }
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public Context getCurrentLocation() {
+
+    private void updateContext(String context2) {
+	    String user = name+"_Context";
+	    String update = context2;
+	    StringType st = new StringType(update);
+	    if(eventPublisher == null) {
+		    logger.info("eventPublisher == null");
+	    }
+	    try {
+		    eventPublisher.postUpdate(user, st);
+	    }
+	    catch(Exception e) {
+		    logger.info(e.toString());
+	    }	
+    }
+
+
+    public String getName() {
+	    return name;
+    }
+    public void setName(String name) {
+	    this.name = name;
+    }
+    public Context getCurrentLocation() {
 		return currentContext;
 	}
 	public void setCurrentContext(Context currentContext) {
 		this.currentContext = currentContext;
 	}
-	
+
 	public boolean updateContext()
 	{
 		logger.debug("Updaing context");
@@ -52,21 +81,27 @@ public class User extends AbstractBinding  {
 		Context newContext = c.getCurrentContext(this);
 		if(!currentContext.equalsIgnoreTime(newContext)) {
 			logger.info(newContext.toString());
-		    if(currentContext.getLocation().getDistanceToHome() < 20
-		    		&& newContext.getLocation().getDistanceToHome() >= 20) // NOT_AT_HOME
+			
+		    if(currentContext.getLocation().getDistanceToHome() < radius
+		    		&& newContext.getLocation().getDistanceToHome() >= radius) // NOT_AT_HOME
 		    {
 		    	eventPublisher.postUpdate(name,ContextType.NOT_AT_HOME);
+		    	updateContext("NOT_AT_HOME");
 		    }
-		    else if(currentContext.getLocation().getDistanceToHome() >= 20
-		    		&& newContext.getLocation().getDistanceToHome() < 20) // AT_HOME
+		    else if(currentContext.getLocation().getDistanceToHome() >= radius
+		    		&& newContext.getLocation().getDistanceToHome() < radius) // AT_HOME
 		    {
 		    	eventPublisher.postUpdate(name,ContextType.AT_HOME);
+		    	updateContext("AT_HOME");
 		    }
+		    
 		    currentContext = newContext; // New context!!
-			logContext(newContext); 
+	    	logContext(currentContext);
 			return true;
 		} else{
-			logger.info(name+" no update : distance to home is "+newContext.getLocation().getDistanceToHome());
+			if(ContextService.DEMO_MODE == false) {
+			    logger.info(name+" no update : distance to home is "+newContext.getLocation().getDistanceToHome());
+			}
 			return false; // no new context
 		}
 

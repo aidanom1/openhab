@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.openhab.io.context.activity.ActivityGenerator;
 import org.openhab.io.context.location.LocationList;
+import org.openhab.io.context.primitives.Activity;
 import org.openhab.io.context.primitives.Context;
 import org.openhab.io.context.primitives.Location;
 import org.openhab.io.context.primitives.User;
@@ -47,9 +48,13 @@ public class ContextGenerator {
 	public Context getCurrentContext(User u)
 	{
 		Context c = new Context(u); // Name set
+		Location userLocation = l.getUserLocation(u);
+		Activity userActivity = a.getUserActivity(u);
 		c.setDate(Calendar.getInstance()); // Time set
-		c.setLocation(l.getUserLocation(u));
-		c.setActivity(a.getUserActivity(u));
+		if(userLocation != null)
+		    c.setLocation(userLocation);
+		if(userActivity != null)
+		    c.setActivity(userActivity);
 		
 		return c;
 	}
