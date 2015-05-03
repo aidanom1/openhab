@@ -89,7 +89,7 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 		logger.debug("org.openhab.core.context.location updated");
 		if(Boolean.parseBoolean(((String) config.get("demo_mode")))) {
 			ContextService.DEMO_MODE = true;
-			ContextService.refreshInterval = 5000;
+			ContextService.refreshInterval = 10000;
 		}
 		String[] ht = ((String) config.get("home")).split(",");
 		User.radius = Integer.parseInt((String)config.get("radius"));

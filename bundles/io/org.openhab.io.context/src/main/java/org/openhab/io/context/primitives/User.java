@@ -15,7 +15,9 @@ import org.openhab.io.context.ContextGenerator;
 import org.openhab.io.context.ContextService;
 //import org.openhab.io.rest.RESTApplication;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;;
+import org.slf4j.LoggerFactory;
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import java.util.ArrayDeque;
 public class User {
 	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
 
@@ -23,12 +25,14 @@ public class User {
     private String name;
     private String email;
     public static int radius;
+    private CircularFifoBuffer recentContexts;
     
     protected EventPublisher eventPublisher;
     public User(String name, String email, EventPublisher eventPublisher2)
     {
     	this.name = name;
     	this.email = email;
+    	recentContexts = new CircularFifoBuffer();
     	this.eventPublisher = eventPublisher2;
     	ContextGenerator c =  ContextGenerator.getInstance();
     	currentContext = c.getCurrentContext(this);
@@ -126,6 +130,7 @@ public class User {
 		if(c.getDate() == null) return;
 		if(c.getUser() == null) return;
 		SimpleDateFormat f = new SimpleDateFormat("EEE HH:mm:ss dd/MM/yyyy");
+		recentContexts.add(c);
 		try {
 			Class.forName(driverClass).newInstance();
 		    connection = DriverManager.getConnection(url, "openhab", "openhab");
@@ -144,6 +149,10 @@ public class User {
 		catch(Exception e) {
 			logger.debug("Error writing context to database "+e.toString());
 		}
+	}
+	
+	public CircularFifoBuffer getRecentContexts() {
+		return recentContexts;
 	}
 
 }

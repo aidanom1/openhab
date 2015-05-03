@@ -26,6 +26,10 @@ import com.google.api.services.calendar.Calendar.Events;
 import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.GeocodingApiRequest;
+import com.google.maps.model.GeocodingResult;
 
 
 import java.io.BufferedReader;
@@ -34,6 +38,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.List;
 
 
@@ -156,11 +163,55 @@ public class ActivityGenerator {
 				    a.setDescription(event.getDescription());
 				if(event.getSummary() != null)
 				    a.setSummary(event.getSummary());
+				logEvent(event, u);
 			}
 			logger.debug(event.getSummary());
 		}
 	  return a;
   }
+	private String driverClass = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://127.0.0.1:3306/openhab";
+
+	private Connection connection = null;
+	
+private void logEvent(Event event, User u2) {
+	if(event.getSummary() == null) return;
+	switch(event.getSummary()) {
+	    case "WORK":
+	    case "SOCIAL":
+	    case "SCHOOL":
+	    case "SHOPPING": break;
+	    default : return;
+	}
+	String location = event.getLocation();
+	if(location == null) return;
+	String summary = event.getSummary();
+	GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
+	GeocodingResult[] result = null;
+	try {
+		result = GeocodingApi.geocode(context,location).await();
+	} catch (Exception e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	double lat = result[0].geometry.location.lat;
+	double lng = result[0].geometry.location.lng;
+
+	try {
+		Class.forName(driverClass).newInstance();
+	    connection = DriverManager.getConnection(url, "openhab", "openhab");
+	    Statement st = connection.createStatement();
+        st = connection.createStatement();
+       
+        String query = "insert into MASTERLOCATIONLIST values (user,location,address,lng,lat";
+		logger.debug(query);
+		int t = st.executeUpdate(query);
+		st.close();
+	}
+	catch(Exception e) {
+		logger.debug("Error writing context to database "+e.toString());
+	}
+}
 
 public boolean initialised() {
 	return isinit;
