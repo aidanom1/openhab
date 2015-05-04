@@ -1,49 +1,101 @@
 package org.openhab.io.context.interpretation;
 
+import org.openhab.core.library.types.ContextType;
+import org.openhab.io.context.ContextService;
+import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeSchoolContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeSleepContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeSocialContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeWorkContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeHolidaysContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSchoolContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeShoppingContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSocialCinemaContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSocialContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSocialDiningContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingHolidaysContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingHomeContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingSchoolContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingShoppingContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingSocialContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingWorkContextCriteria;
+import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeWorkContextCriteria;
 import org.openhab.io.context.primitives.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContextChangeInterpreter {
-
-	public String getContext(User u) {
-		String context = "NO_UPDATE";
+	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
+	
+	public String getContextAsString(ContextType t)
+	{
+		switch(t) {
+	    case AT_HOME       :                 return "AT_HOME";
+	    case NOT_AT_HOME   :                 return "NOT_AT_HOME";
+	    case AT_HOME_SOCIAL:                 return "AT_HOME_SOCIAL";
+	    case AT_HOME_SLEEP :                 return "AT_HOME_SLEEP";
+	    case AT_HOME_WORK  :                 return "AT_HOME_WORK";
+	    case AT_HOME_SCHOOL:                 return "AT_HOME_SCHOOL";
+	    case NOT_AT_HOME_HOLIDAYS:           return "NOT_AT_HOME_HOLIDAYS";
+	    case NOT_AT_HOME_SCHOOL:             return "NOT_AT_HOME_SCHOOL";
+	    case NOT_AT_HOME_SHOPPING:           return "NOT_AT_HOME_SHOPPING";
+    	case NOT_AT_HOME_SOCIAL:             return "NOT_AT_HOME_SOCIAL";
+	    case NOT_AT_HOME_SOCIAL_CINEMA:      return "NOT_AT_HOME_SOCIAL_CINEMA";
+	    case NOT_AT_HOME_SOCIAL_DINING:      return "NOT_AT_HOME_SOCIAL_DINING";
+	    case NOT_AT_HOME_TRAVELING:          return "NOT_AT_HOME_TRAVELING";
+	    case NOT_AT_HOME_TRAVELING_HOLIDAYS: return "NOT_AT_HOME_TRAVELING_HOLIDAYS";
+	    case NOT_AT_HOME_TRAVELING_HOME:     return "NOT_AT_HOME_TRAVELING_HOME";
+	    case NOT_AT_HOME_TRAVELING_SCHOOL:   return "NOT_AT_HOME_TRAVELING_SCHOOL";
+	    case NOT_AT_HOME_TRAVELING_SHOPPING: return "NOT_AT_HOME_TRAVELING_SHOPPING";
+	    case NOT_AT_HOME_TRAVELING_SOCIAL:   return "NOT_AT_HOME_TRAVELING_SOCIAL";
+	    case NOT_AT_HOME_TRAVELING_WORK:     return "NOT_AT_HOME_TRAVELING_WORK";
+	    case NOT_AT_HOME_WORK:               return "NOT_AT_HOME_WORK";
+	    default:
+	}
+	return "LIMBO";		
+	}
+	
+	
+	
+	public ContextType getContext(User u) {
+		ContextType context = null;
 		ContextCriteriaFactory fact = new ContextCriteriaFactory();
-		if(fact.getCriteria("AT_HOME").meetsCriteria(u)) {
-			context = "AT_HOME";
-			if(fact.getCriteria("AT_HOME_SOCIAL").meetsCriteria(u)) {
-				context = "AT_HOME_SOCIAL";
+		if(fact.getCriteria(ContextType.AT_HOME).meetsCriteria(u)) {
+			context = ContextType.AT_HOME;
+			if(fact.getCriteria(ContextType.AT_HOME_SOCIAL).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_SOCIAL;
 			}
-			else if(fact.getCriteria("AT_HOME_SLEEP").meetsCriteria(u)) {
-				context = "AT_HOME_SLEEP";
+			else if(fact.getCriteria(ContextType.AT_HOME_SLEEP).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_SLEEP;
 			}
-			else if(fact.getCriteria("AT_HOME_WORK").meetsCriteria(u)) {
-				context = "AT_HOME_WORK";
+			else if(fact.getCriteria(ContextType.AT_HOME_WORK).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_WORK;
 			}
-			else if(fact.getCriteria("AT_HOME_SCHOOL").meetsCriteria(u)) {
-				context = "AT_HOME_SCHOOL";
+			else if(fact.getCriteria(ContextType.AT_HOME_SCHOOL).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_SCHOOL;
 			}
 		}
-		else if(fact.getCriteria("NOT_AT_HOME").meetsCriteria(u)) {
-			// User is NOT_AT_HOME
-			context = "NOT_AT_HOME";
-			if(fact.getCriteria("NOT_AT_HOME_TRAVELLING").meetsCriteria(u)) {
-				// User is travelling
-				context = "NOT_AT_HOME_TRAVELLING";
-				if(fact.getCriteria("NOT_AT_HOME_TRAVELLING_HOME").meetsCriteria(u)) {
-					// User is on the way home
-					context = "NOT_AT_HOME_TRAVELLING_HOME";
+		else if(fact.getCriteria(ContextType.NOT_AT_HOME).meetsCriteria(u)) {
+			context = ContextType.NOT_AT_HOME;
+			if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_TRAVELING;
+				if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_HOME).meetsCriteria(u)) {
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
 				}
 			}
-			else if(fact.getCriteria("NOT_AT_HOME_SOCIAL").meetsCriteria(u)) {
-				context = "NOT_AT_HOME_SOCIAL";
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SOCIAL).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_SOCIAL;
 			}
-			else if(fact.getCriteria("NOT_AT_HOME_WORK").meetsCriteria(u)) {
-				context = "NOT_AT_HOME_WORK";
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_WORK).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_WORK;
 			}
-			else if(fact.getCriteria("NOT_AT_HOME_SCHOOL").meetsCriteria(u)) {
-				context = "NOT_AT_HOME_SCHOOL";
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SCHOOL).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_SCHOOL;
 			}
-			else if(fact.getCriteria("NOT_AT_HOME_SHOPPING").meetsCriteria(u)) {
-				context = "NOT_AT_HOME_SHOPPING";
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SHOPPING).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_SHOPPING;
 			}
 		}
         return context;

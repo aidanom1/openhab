@@ -6,7 +6,6 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.Properties;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;

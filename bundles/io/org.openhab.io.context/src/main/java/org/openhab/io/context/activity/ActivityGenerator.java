@@ -15,25 +15,7 @@
 package org.openhab.io.context.activity;
 
 
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Lists;
-import com.google.api.client.util.store.DataStoreFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
-
-import com.google.api.services.calendar.Calendar.Events;
-import com.google.api.services.calendar.model.Calendar;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.google.maps.GeoApiContext;
-import com.google.maps.GeocodingApi;
-import com.google.maps.GeocodingApiRequest;
-import com.google.maps.model.GeocodingResult;
-
-
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -43,15 +25,25 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.List;
 
-
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.*; 
 import org.openhab.io.context.ContextService;
 import org.openhab.io.context.activity.OAuth2Util.UserToken;
-import org.openhab.io.context.primitives.*;
+import org.openhab.io.context.primitives.Activity;
+import org.openhab.io.context.primitives.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.Lists;
+import com.google.api.client.util.store.DataStoreFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.calendar.model.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
 
 /**
  * @author Yaniv Inbar
@@ -175,14 +167,13 @@ public class ActivityGenerator {
 	private Connection connection = null;
 	
 private void logEvent(Event event, User u2) {
+	
 	if(event.getSummary() == null) return;
-	switch(event.getSummary()) {
-	    case "WORK":
-	    case "SOCIAL":
-	    case "SCHOOL":
-	    case "SHOPPING": break;
-	    default : return;
-	}
+
+	if(!event.getSummary().equals("WORK") &&
+			!event.getSummary().equals("SOCIAL") &&
+			!event.getSummary().equals("SCHOOL") &&
+			!event.getSummary().equals("SHOPPING")) return;
 	String location = event.getLocation();
 	if(location == null) return;
 	String summary = event.getSummary();
@@ -192,7 +183,7 @@ private void logEvent(Event event, User u2) {
 		result = GeocodingApi.geocode(context,location).await();
 	} catch (Exception e1) {
 		// TODO Auto-generated catch block
-		e1.printStackTrace();
+		logger.debug(e1.getMessage());
 	}
 	double lat = result[0].geometry.location.lat;
 	double lng = result[0].geometry.location.lng;
@@ -203,7 +194,10 @@ private void logEvent(Event event, User u2) {
 	    Statement st = connection.createStatement();
         st = connection.createStatement();
        
-        String query = "insert into MASTERLOCATIONLIST values (user,location,address,lng,lat";
+        String query = "insert into MASTERLOCATIONLIST (user,category,address,lng,lat) values " +
+        		"('"+u2.getName()+"','"+
+        		summary+"','"+
+        		location+"',"+String.valueOf(lat)+","+String.valueOf(lng)+")";
 		logger.debug(query);
 		int t = st.executeUpdate(query);
 		st.close();

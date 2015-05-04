@@ -1,11 +1,6 @@
 package org.openhab.io.context.primitives;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import org.openhab.io.context.ContextService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /*
  * This class contains a Context for a user. Context is defined as
  * Location

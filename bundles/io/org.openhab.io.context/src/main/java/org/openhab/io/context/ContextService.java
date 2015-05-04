@@ -1,14 +1,10 @@
 package org.openhab.io.context;
-import org.openhab.io.context.location.*;
-import org.openhab.io.context.primitives.*;
-
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.service.AbstractActiveService;
+import org.openhab.io.context.primitives.User;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.quartz.Scheduler;
@@ -84,6 +80,7 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 	}
 
 
+	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException
 	{
 		logger.debug("org.openhab.core.context.location updated");
@@ -118,4 +115,36 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 		setProperlyConfigured(true);	
 	}
 
+	/*
+	@Override
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException
+	{
+		logger.debug("org.openhab.core.context.location updated");
+
+		String[] ht ={ "51.922594","-8.486041"};
+		User.radius = 50;
+		try {
+			
+		    ContextService.HOME_LATITUDE = Double.parseDouble(ht[0]); 
+		    ContextService.HOME_LONGITUDE = Double.parseDouble(ht[1]); 
+		    logger.info(Double.toString(ContextService.HOME_LATITUDE)+","+Double.toString(ContextService.HOME_LONGITUDE));
+		}
+		catch(Exception e) {
+			logger.info("Forgot to set location, no worries, we can pretend we're at home! "+e);
+		}
+		if(users != null)// && config != null)
+		{
+
+			String[] st = {"aidan","aileen"};
+			String[] emails = {"aidan.omahony@gmail.com","aileenmorelly@gmail.com"};
+	        for(int i = 0; i < st.length; i++)
+            {
+	        	User temp = new User(st[i],emails[i], eventPublisher);
+                users.add(temp);
+        		//TODO should check if adding duplicates
+            }
+		}
+		setProperlyConfigured(true);	
+	}
+	*/
 }

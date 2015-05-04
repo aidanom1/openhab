@@ -1,23 +1,21 @@
 package org.openhab.io.context.primitives;
 
 
-import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.events.*;
-import org.openhab.core.library.types.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 
-
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.types.ContextType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.io.context.ContextGenerator;
 import org.openhab.io.context.ContextService;
-//import org.openhab.io.rest.RESTApplication;
+import org.openhab.io.context.interpretation.ContextChangeInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
-import java.util.ArrayDeque;
+//import org.openhab.io.rest.RESTApplication;
 public class User {
 	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
 
@@ -25,44 +23,25 @@ public class User {
     private String name;
     private String email;
     public static int radius;
-    private CircularFifoBuffer recentContexts;
-    
+    private LinkedList<Context> recentContexts;
     protected EventPublisher eventPublisher;
+    
     public User(String name, String email, EventPublisher eventPublisher2)
     {
     	this.name = name;
     	this.email = email;
-    	recentContexts = new CircularFifoBuffer();
+    	recentContexts = new LinkedList<Context>();
     	this.eventPublisher = eventPublisher2;
     	ContextGenerator c =  ContextGenerator.getInstance();
     	currentContext = c.getCurrentContext(this);
-
-    	if(currentContext.getLocation().getDistanceToHome() < radius) {
-    		eventPublisher.postUpdate(name,ContextType.AT_HOME);
-    		updateContext("AT_HOME");
-    	}
-    	else {
-    		eventPublisher.postUpdate(name,ContextType.NOT_AT_HOME);
-    		updateContext("NOT_AT_HOME");
-    	}
+    	logger.debug("currentContext = c.getCurrentContext(this);");
+    	processContext();
+    	logger.debug("processContext();");
     	logContext(currentContext);
+    	logger.debug("logContext(currentContext);");
     	
     }
 
-    private void updateContext(String context2) {
-	    String user = name+"_Context";
-	    String update = context2;
-	    StringType st = new StringType(update);
-	    if(eventPublisher == null) {
-		    logger.info("eventPublisher == null");
-	    }
-	    try {
-		    eventPublisher.postUpdate(user, st);
-	    }
-	    catch(Exception e) {
-		    logger.info(e.toString());
-	    }	
-    }
 
 
     public String getName() {
@@ -80,26 +59,15 @@ public class User {
 
 	public boolean updateContext()
 	{
-		logger.debug("Updaing context");
+		logger.debug("Updating context");
 		ContextGenerator c =  ContextGenerator.getInstance();
 		Context newContext = c.getCurrentContext(this);
 		if(!currentContext.equalsIgnoreTime(newContext)) {
 			logger.info(newContext.toString());
-			
-		    if(currentContext.getLocation().getDistanceToHome() < radius
-		    		&& newContext.getLocation().getDistanceToHome() >= radius) // NOT_AT_HOME
-		    {
-		    	eventPublisher.postUpdate(name,ContextType.NOT_AT_HOME);
-		    	updateContext("NOT_AT_HOME");
-		    }
-		    else if(currentContext.getLocation().getDistanceToHome() >= radius
-		    		&& newContext.getLocation().getDistanceToHome() < radius) // AT_HOME
-		    {
-		    	eventPublisher.postUpdate(name,ContextType.AT_HOME);
-		    	updateContext("AT_HOME");
-		    }
-		    
+			recentContexts.addFirst(currentContext);
+			if(recentContexts.size() > 16) recentContexts.removeLast();
 		    currentContext = newContext; // New context!!
+	    	processContext();
 	    	logContext(currentContext);
 			return true;
 		} else{
@@ -118,9 +86,21 @@ public class User {
 	}
 	private String driverClass = "com.mysql.jdbc.Driver";
 	private String url = "jdbc:mysql://127.0.0.1:3306/openhab";
-	private String user = "openhab";
-	private String password = "openhab";
 	private Connection connection = null;
+	
+	private void processContext() {
+		if(currentContext == null) return;
+		if(currentContext.getActivity() == null) return;
+		if(currentContext.getLocation() == null) return;
+		if(currentContext.getDate() == null) return;
+		if(currentContext.getUser() == null) return;
+		ContextChangeInterpreter cci = new ContextChangeInterpreter();
+		ContextType highLevelContext = cci.getContext(this);
+		if(highLevelContext != null) {
+			eventPublisher.postUpdate(name,highLevelContext);
+			eventPublisher.postUpdate(name+"_Context", new StringType(cci.getContextAsString(highLevelContext)));
+		}		
+	}
 	
 	public void logContext(Context c)
 	{
@@ -130,7 +110,8 @@ public class User {
 		if(c.getDate() == null) return;
 		if(c.getUser() == null) return;
 		SimpleDateFormat f = new SimpleDateFormat("EEE HH:mm:ss dd/MM/yyyy");
-		recentContexts.add(c);
+
+
 		try {
 			Class.forName(driverClass).newInstance();
 		    connection = DriverManager.getConnection(url, "openhab", "openhab");
@@ -151,8 +132,12 @@ public class User {
 		}
 	}
 	
-	public CircularFifoBuffer getRecentContexts() {
+	public LinkedList<Context> getRecentContexts() {
 		return recentContexts;
+	}
+
+	public Context getCurrentContext() {
+		return currentContext;
 	}
 
 }

@@ -1,16 +1,15 @@
 package org.openhab.io.context.location;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openhab.io.context.ContextService;
-import org.openhab.io.context.primitives.*;
+import org.openhab.io.context.primitives.Location;
+import org.openhab.io.context.primitives.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
