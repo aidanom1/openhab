@@ -1,4 +1,4 @@
-package org.openhab.io.context.activity;
+package org.openhab.io.context.activity.oauth;
 
 import static org.quartz.SimpleScheduleBuilder.repeatSecondlyForever;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
-import org.openhab.io.context.activity.OAuth2Util.AccessToken;
+import org.openhab.io.context.activity.oauth.OAuth2Util.AccessToken;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -39,7 +39,8 @@ public class CheckAuthorizedJob implements Job {
 
         static final Logger logger = LoggerFactory.getLogger(CheckAuthorizedJob.class);
        
-        public void execute(JobExecutionContext context) throws JobExecutionException {
+        @Override
+		public void execute(JobExecutionContext context) throws JobExecutionException {
                 JobDataMap jobData = context.getMergedJobDataMap();
                
                 HttpResponse response = null;

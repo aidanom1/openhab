@@ -1,4 +1,4 @@
-package org.openhab.io.context.activity;
+package org.openhab.io.context.activity.oauth;
 
 /* Much of this is taken from the same filename in the google drive persistence package */
 import static org.quartz.JobBuilder.newJob;

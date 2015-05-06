@@ -3,7 +3,7 @@ package org.openhab.io.context.interpretation.CriteriaLibrary;
 import org.openhab.io.context.interpretation.Criteria;
 import org.openhab.io.context.primitives.User;
 
-public class NotAtHomeTravelingShoppingContextCriteria implements Criteria {
+public class NotAtHomeTravelingShoppingContextCriteria extends Criteria {
 
 	@Override
 	public boolean meetsCriteria(User u) {

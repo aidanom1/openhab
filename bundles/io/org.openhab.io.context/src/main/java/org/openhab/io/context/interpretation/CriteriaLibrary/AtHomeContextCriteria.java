@@ -4,7 +4,7 @@ import org.openhab.io.context.interpretation.Criteria;
 import org.openhab.io.context.primitives.Context;
 import org.openhab.io.context.primitives.User;
 
-public class AtHomeContextCriteria implements Criteria{
+public class AtHomeContextCriteria extends Criteria{
 
 	/* User meets the criteria of being at home if the following is satisfied
 	 * if first context update simply check if distance to home is < radius
@@ -12,6 +12,7 @@ public class AtHomeContextCriteria implements Criteria{
 	 * else return false
 	 * @see org.openhab.io.context.interpretation.Criteria#meetsCriteria(org.openhab.io.context.primitives.User)
 	 */
+	@Override
 	public boolean meetsCriteria(User u) {
 		if(u.getRecentContexts().isEmpty()) { // No recent contexts
 			return u.getCurrentContext().getLocation().getDistanceToHome() < User.radius;

@@ -3,7 +3,8 @@ package org.openhab.io.context.primitives;
 public class Activity {
     private String activity = "Nothing yet";
     
-    public String toString() {
+    @Override
+	public String toString() {
     		return activity;
     }
     

@@ -78,6 +78,7 @@ public class Context {
 		return activity;
 	}
 	
+	@Override
 	public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MMM/yyyy");
 		return "\n*****************************************************************\n"+

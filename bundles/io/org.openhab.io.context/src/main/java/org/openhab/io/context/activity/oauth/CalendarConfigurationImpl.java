@@ -1,4 +1,4 @@
-package org.openhab.io.context.activity;
+package org.openhab.io.context.activity.oauth;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.io.context.activity.OAuth2Util.AccessToken;
-import org.openhab.io.context.activity.OAuth2Util.UserToken;
+import org.openhab.io.context.activity.oauth.OAuth2Util.AccessToken;
+import org.openhab.io.context.activity.oauth.OAuth2Util.UserToken;
 import org.openhab.io.context.primitives.User;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -307,19 +307,23 @@ public class CalendarConfigurationImpl implements  JobListener {
         
 
         // Job listener methods.
-        public String getName() {
+        @Override
+		public String getName() {
                 return "AccessTokenJobListener";
         }
 
-        public void jobExecutionVetoed(JobExecutionContext arg0) {
+        @Override
+		public void jobExecutionVetoed(JobExecutionContext arg0) {
                 // we're not interested
         }
 
-        public void jobToBeExecuted(JobExecutionContext arg0) {
+        @Override
+		public void jobToBeExecuted(JobExecutionContext arg0) {
                 // we're not interested        
         }
 
-        public void jobWasExecuted(JobExecutionContext context,
+        @Override
+		public void jobWasExecuted(JobExecutionContext context,
                         JobExecutionException e) {
                 AccessToken token = (AccessToken) context.getResult();
                

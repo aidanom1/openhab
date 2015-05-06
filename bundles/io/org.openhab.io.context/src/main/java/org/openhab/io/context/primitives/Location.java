@@ -37,6 +37,7 @@ public class Location {
 		this.distanceToHome = distanceToHome;
 	}
   
+	@Override
 	public String toString() {
 		return this.longitude+","+this.latitude+","+distanceToHome+" meters,"+locationAsString;
 	}

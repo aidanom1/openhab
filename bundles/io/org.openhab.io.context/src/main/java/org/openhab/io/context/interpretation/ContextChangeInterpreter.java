@@ -2,26 +2,6 @@ package org.openhab.io.context.interpretation;
 
 import org.openhab.core.library.types.ContextType;
 import org.openhab.io.context.ContextService;
-import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeSchoolContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeSleepContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeSocialContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.AtHomeWorkContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeHolidaysContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSchoolContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeShoppingContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSocialCinemaContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSocialContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeSocialDiningContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingHolidaysContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingHomeContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingSchoolContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingShoppingContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingSocialContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeTravelingWorkContextCriteria;
-import org.openhab.io.context.interpretation.CriteriaLibrary.NotAtHomeWorkContextCriteria;
 import org.openhab.io.context.primitives.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,8 +59,10 @@ public class ContextChangeInterpreter {
 		}
 		else if(fact.getCriteria(ContextType.NOT_AT_HOME).meetsCriteria(u)) {
 			context = ContextType.NOT_AT_HOME;
+			
 			if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_TRAVELING;
+				
 				if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_HOME).meetsCriteria(u)) {
 					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
 				}

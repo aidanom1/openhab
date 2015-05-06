@@ -43,6 +43,7 @@ public class ExecuteCommandJob implements Job {
 	public static final String JOB_DATA_CONTENT_KEY = "content";
 	
 	
+	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		String content = (String) 
 			context.getJobDetail().getJobDataMap().get(JOB_DATA_CONTENT_KEY);
@@ -151,14 +152,17 @@ public class ExecuteCommandJob implements Job {
 	 */
 	private static class LogConsole implements Console {
 
+		@Override
 		public void print(String s) {
 			logger.info(s);
 		}
 
+		@Override
 		public void println(String s) {
 			logger.info(s);
 		}
 
+		@Override
 		public void printUsage(String s) {
 			logger.info(s);
 		}

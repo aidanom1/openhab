@@ -7,7 +7,6 @@ import org.openhab.core.service.AbstractActiveService;
 import org.openhab.io.context.primitives.User;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
@@ -36,11 +35,6 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 		this.eventPublisher = null;
 	}
 	
-	
-
-	/** holds the local quartz scheduler instance */
-	private Scheduler scheduler;
-	
 	public ContextService()
 	{
 		if(users == null) {
@@ -62,7 +56,7 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 	@Override
 	public void activate() {
         try {
-            scheduler = StdSchedulerFactory.getDefaultScheduler();
+            StdSchedulerFactory.getDefaultScheduler();
             super.activate();
         }
         catch (SchedulerException se) {
@@ -103,13 +97,10 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 		{
 	        String[] st = ((String) config.get("users")).split(",");
 	        String[] emails = ((String) config.get("emails")).split(",");
-			//String[] st = {"aidan","aileen"};
-			//String[] emails = {"aidan.omahony@gmail.com","aileenmorelly@gmail.com"};
 	        for(int i = 0; i < st.length; i++)
             {
 	        	User temp = new User(st[i],emails[i], eventPublisher);
                 users.add(temp);
-        		//TODO should check if adding duplicates
             }
 		}
 		setProperlyConfigured(true);	
