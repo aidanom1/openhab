@@ -325,7 +325,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		} catch (Exception e) {
 			errCnt++;
 
-			logger.error("mySQL: Could not store item '{}' in database with statement '{}': {}", item.getName(),
+			logger.debug("mySQL: Could not store item '{}' in database with statement '{}': {}", item.getName(),
 					sqlCmd, e.getMessage());
 		} finally {
 			if (statement != null) {

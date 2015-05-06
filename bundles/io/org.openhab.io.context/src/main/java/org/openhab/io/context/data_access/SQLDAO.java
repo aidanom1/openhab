@@ -21,6 +21,23 @@ public class SQLDAO {
 	private Connection connection = null;
 	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
 	private static SQLDAO instance = null;
+	private Statement st;
+	
+	
+	private SQLDAO() {
+		try {
+			Class.forName(driverClass).newInstance();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.debug(e.toString());
+		}
+		try {
+			connection = DriverManager.getConnection(url, "openhab", "openhab");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.debug(e.toString());
+		}
+	}
 	
 	public static SQLDAO getInstance() {
 		if(instance == null) {
@@ -47,6 +64,7 @@ public class SQLDAO {
 			t.last();
 			temp = t.getString(2);
 			t.close();
+			st.close();
 		} catch (SQLException e) {
 			logger.debug(e.toString());
 		}
@@ -85,16 +103,11 @@ public class SQLDAO {
 	
 	private ResultSet executeSelectQuery(String query) {
 		try {
-		Class.forName(driverClass).newInstance();
-		connection = DriverManager.getConnection(url, "openhab", "openhab");
-		Statement st = connection.createStatement();
+
 	    st = connection.createStatement();	
 		logger.debug(query);
 		ResultSet t = st.executeQuery(query);
-		st.close();
-		disconnectFromDatabase();
-		return t;
-		
+		return t;	
 	} catch (Exception e) {
 		logger.debug(e.toString());
 	}
@@ -103,14 +116,10 @@ public class SQLDAO {
 	
 	private boolean executeInsertQuery(String query) {
 		try {
-			Class.forName(driverClass).newInstance();
-		    connection = DriverManager.getConnection(url, "openhab", "openhab");
-		    Statement st = connection.createStatement();
 	        st = connection.createStatement();
 			logger.debug(query);
 			st.executeUpdate(query);
 			st.close();
-			disconnectFromDatabase();
 			return true;
 		}
 		catch(Exception e) {
@@ -119,17 +128,7 @@ public class SQLDAO {
 		return false;
 	}
 	
-	private void disconnectFromDatabase() {
-		if (connection != null) {
-			try {
-				connection.close();
-				logger.debug("mySQL: Disconnected from database {}", url);
-			} catch (Exception e) {
-				logger.error("mySQL: Failed disconnecting from the SQL database {}", e);
-			}
-			connection = null;
-		}
-	}
+
 
 
 

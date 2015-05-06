@@ -28,7 +28,7 @@ public class User {
     {
     	this.name = name;
     	this.email = email;
-    	sqldao = new SQLDAO();
+    	sqldao = SQLDAO.getInstance();
     	recentContexts = new LinkedList<Context>();
     	this.eventPublisher = eventPublisher2;
     	ContextGenerator c =  ContextGenerator.getInstance();
