@@ -24,13 +24,13 @@ public class User {
     protected EventPublisher eventPublisher;
     private SQLDAO sqldao;
     
-    public User(String name, String email, EventPublisher eventPublisher2)
+    public User(String name, String email, EventPublisher eventPublisher)
     {
     	this.name = name;
     	this.email = email;
     	sqldao = SQLDAO.getInstance();
     	recentContexts = new LinkedList<Context>();
-    	this.eventPublisher = eventPublisher2;
+    	this.eventPublisher = eventPublisher;
     	ContextGenerator c =  ContextGenerator.getInstance();
     	currentContext = c.getCurrentContext(this);
     	processContext();

@@ -1,5 +1,6 @@
 package org.openhab.io.context.interpretation.CriteriaLibrary;
 
+import java.util.Calendar;
 import java.util.LinkedList;
 
 import org.openhab.io.context.interpretation.Criteria;
@@ -20,6 +21,10 @@ public class NotAtHomeTravelingContextCriteria extends Criteria {
 	@Override
 	public boolean meetsCriteria(User u) {
 		LinkedList<Context> recentContexts = u.getRecentContexts();
+		long now = System.currentTimeMillis();
+		if((u.getCurrentContext().getDate().getTimeInMillis() + (5*60*1000)) < now) { // we haven't moved in over 5 minutes, not likely to be travelling
+			return false;
+		}
 		if(recentContexts.size() < 3) {return false;} // Who knows if we are travelling in this case, need 4 points
 		double distances[] = {0.0,0.0,0.0}; // 3 distances, 1 is allows to be 0
 		distances[0] = LocationList.distance(u.getCurrentContext().getLocation().getLatitude(), 

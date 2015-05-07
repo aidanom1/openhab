@@ -33,19 +33,19 @@ public class ContextCriteriaFactory {
 		    case AT_HOME_WORK  :                 return new AtHomeWorkContextCriteria();
 		    case AT_HOME_SCHOOL:                 return new AtHomeSchoolContextCriteria();
 		    case NOT_AT_HOME_HOLIDAYS:           return new NotAtHomeHolidaysContextCriteria();
-		    case NOT_AT_HOME_SCHOOL:             return new NotAtHomeSchoolContextCriteria();
-		    case NOT_AT_HOME_SHOPPING:           return new NotAtHomeShoppingContextCriteria();
+		    case NOT_AT_HOME_SCHOOL:             return new NotAtHomeSchoolContextCriteria();               // implemented
+		    case NOT_AT_HOME_SHOPPING:           return new NotAtHomeShoppingContextCriteria();             // implemented
 	    	case NOT_AT_HOME_SOCIAL:             return new NotAtHomeSocialContextCriteria();
 		    case NOT_AT_HOME_SOCIAL_CINEMA:      return new NotAtHomeSocialCinemaContextCriteria();
 		    case NOT_AT_HOME_SOCIAL_DINING:      return new NotAtHomeSocialDiningContextCriteria();
-		    case NOT_AT_HOME_TRAVELING:          return new NotAtHomeTravelingContextCriteria();           // implemented
+		    case NOT_AT_HOME_TRAVELING:          return new NotAtHomeTravelingContextCriteria();            // implemented
 		    case NOT_AT_HOME_TRAVELING_HOLIDAYS: return new NotAtHomeTravelingHolidaysContextCriteria();
 		    case NOT_AT_HOME_TRAVELING_HOME:     return new NotAtHomeTravelingHomeContextCriteria();
 		    case NOT_AT_HOME_TRAVELING_SCHOOL:   return new NotAtHomeTravelingSchoolContextCriteria();
 		    case NOT_AT_HOME_TRAVELING_SHOPPING: return new NotAtHomeTravelingShoppingContextCriteria();
 		    case NOT_AT_HOME_TRAVELING_SOCIAL:   return new NotAtHomeTravelingSocialContextCriteria();
 		    case NOT_AT_HOME_TRAVELING_WORK:     return new NotAtHomeTravelingWorkContextCriteria();
-		    case NOT_AT_HOME_WORK:               return new NotAtHomeWorkContextCriteria();                // implemented
+		    case NOT_AT_HOME_WORK:               return new NotAtHomeWorkContextCriteria();                 // implemented
 		    default:
 		}
 		return null;

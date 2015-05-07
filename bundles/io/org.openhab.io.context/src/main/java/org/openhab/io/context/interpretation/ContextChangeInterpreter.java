@@ -59,8 +59,9 @@ public class ContextChangeInterpreter {
 		}
 		else if(fact.getCriteria(ContextType.NOT_AT_HOME).meetsCriteria(u)) {
 			context = ContextType.NOT_AT_HOME;
-			
+			logger.info("ContextType.NOT_AT_HOME;");
 			if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING).meetsCriteria(u)) {
+				logger.info("ContextType.NOT_AT_HOME_TRAVELING;");
 				context = ContextType.NOT_AT_HOME_TRAVELING;
 				
 				if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_HOME).meetsCriteria(u)) {
@@ -71,6 +72,7 @@ public class ContextChangeInterpreter {
 				context = ContextType.NOT_AT_HOME_SOCIAL;
 			}
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_WORK).meetsCriteria(u)) {
+				logger.info("ContextType.NOT_AT_HOME_WORK;");
 				context = ContextType.NOT_AT_HOME_WORK;
 			}
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SCHOOL).meetsCriteria(u)) {
