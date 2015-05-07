@@ -84,7 +84,7 @@ public class SQLDAO {
 	
 
 	public ArrayList<double[]> getLocations(String string, User u) {
-		String query = "select lng,lat from MASTERLOCATIONLIST where user='"+u.getName()+"'";
+		String query = "select lng,lat from MASTERLOCATIONLIST where user='"+u.getName()+"' and category='"+string+"'";
 		ResultSet t = executeSelectQuery(query);
 		ArrayList<double[]> locations = new ArrayList<double[]>();
 		try {
