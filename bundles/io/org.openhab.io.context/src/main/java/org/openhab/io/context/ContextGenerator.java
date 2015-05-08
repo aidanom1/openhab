@@ -1,6 +1,6 @@
 package org.openhab.io.context;
 
-import java.util.Calendar;
+
 import java.util.Date;
 
 import org.openhab.io.context.activity.ActivityGenerator;
@@ -50,7 +50,7 @@ public class ContextGenerator {
 		Context c = new Context(u); // Name set
 		Location userLocation = l.getUserLocation(u);
 		Activity userActivity = a.getUserActivity(u);
-		c.setDate(Calendar.getInstance()); // Time set
+		c.setDate(new Date(System.currentTimeMillis())); // Time set
 		if(userLocation != null)
 		    c.setLocation(userLocation);
 		if(userActivity != null)

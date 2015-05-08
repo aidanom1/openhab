@@ -17,6 +17,7 @@ package org.openhab.io.context.activity;
 import java.util.List;
 import org.openhab.io.context.ContextService;
 import org.openhab.io.context.activity.oauth.CalendarConfigurationImpl;
+import org.openhab.io.context.data_access.CalDAO;
 import org.openhab.io.context.data_access.GeoDAO;
 import org.openhab.io.context.data_access.SQLDAO;
 import org.openhab.io.context.primitives.Activity;
@@ -24,7 +25,6 @@ import org.openhab.io.context.primitives.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.api.client.util.Lists;
-import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 
@@ -36,59 +36,42 @@ public class ActivityGenerator {
 	private static final Logger logger = LoggerFactory
 			.getLogger(ContextService.class);
 
-	static final java.util.List<Calendar> addedCalendarsUsingBatch = Lists
-			.newArrayList();
 
 	private boolean isinit = false;
-	private CalendarConfigurationImpl t;
+
 	private SQLDAO sqldao;
     private GeoDAO geodao;
+    private CalDAO caldao;
     
 	/** Authorizes the installed application to access user's protected data. */
 	public ActivityGenerator() {
 		sqldao = SQLDAO.getInstance();
 		geodao = GeoDAO.getInstance();
+        caldao = CalDAO.getInstance();
+        if(caldao.initialised()) {
+        	isinit = true;
+        }
 
-		try {
-			t = new CalendarConfigurationImpl();
-			t.initialize();
-			if (t.isConfiguredCorrectly()) {
-				isinit = true;
-			}
-		} catch (Exception e) {
-			logger.debug("org.openhab.core.context.activity " + e.toString());
-		}
 
 	}
 
 	public Activity getUserActivity(User u) {
-		com.google.api.services.calendar.model.Events e = t.getUserEvents(u);
+		Event e = caldao.getCurrentEvent(u);
 		Activity a = new Activity();
 		if (e == null)
 			return a;
-		List<Event> items = e.getItems();
-		for (Event event : items) {
-			EventDateTime start = event.getStart();
-			EventDateTime end = event.getEnd();
-			if (start.getDateTime().getValue() <= System.currentTimeMillis()
-					&& end.getDateTime().getValue() > System
-							.currentTimeMillis()) {
-				if (event.getDescription() != null)
-					a.setDescription(event.getDescription());
-				if (event.getSummary() != null)
-					a.setSummary(event.getSummary());
-				logEvent(event, u);
-			}
-			logger.debug(event.getSummary());
-		}
+		if(e.getDescription() != null)
+			a.setDescription(e.getDescription());
+		if (e.getSummary() != null)
+			a.setSummary(e.getSummary());
+		logEvent(e, u);
+	    logger.debug(e.getSummary());
 		return a;
 	}
 
 	private void logEvent(Event event, User u2) {
-
 		if (event.getSummary() == null)
 			return;
-
 		if (!event.getSummary().equals("WORK")
 				&& !event.getSummary().equals("SOCIAL")
 				&& !event.getSummary().equals("SCHOOL")

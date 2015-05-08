@@ -28,23 +28,23 @@ public class ContextCriteriaFactory {
 		switch(crit) {
 		    case AT_HOME       :                 return new AtHomeContextCriteria();                        // implemented
 		    case NOT_AT_HOME   :                 return new NotAtHomeContextCriteria();                     // implemented
-		    case AT_HOME_SOCIAL:                 return new AtHomeSocialContextCriteria();
-		    case AT_HOME_SLEEP :                 return new AtHomeSleepContextCriteria();
-		    case AT_HOME_WORK  :                 return new AtHomeWorkContextCriteria();
-		    case AT_HOME_SCHOOL:                 return new AtHomeSchoolContextCriteria();
-		    case NOT_AT_HOME_HOLIDAYS:           return new NotAtHomeHolidaysContextCriteria();
+		    case AT_HOME_SOCIAL:                 return new AtHomeSocialContextCriteria();                  // implemented
+		    case AT_HOME_SLEEP :                 return new AtHomeSleepContextCriteria();                   // implemented
+		    case AT_HOME_WORK  :                 return new AtHomeWorkContextCriteria();                    // implemented
+		    case AT_HOME_SCHOOL:                 return new AtHomeSchoolContextCriteria();                  // implemented
+		    case NOT_AT_HOME_HOLIDAYS:           return new NotAtHomeHolidaysContextCriteria();             // implemented
 		    case NOT_AT_HOME_SCHOOL:             return new NotAtHomeSchoolContextCriteria();               // implemented
 		    case NOT_AT_HOME_SHOPPING:           return new NotAtHomeShoppingContextCriteria();             // implemented
-	    	case NOT_AT_HOME_SOCIAL:             return new NotAtHomeSocialContextCriteria();
-		    case NOT_AT_HOME_SOCIAL_CINEMA:      return new NotAtHomeSocialCinemaContextCriteria();
-		    case NOT_AT_HOME_SOCIAL_DINING:      return new NotAtHomeSocialDiningContextCriteria();
+	    	case NOT_AT_HOME_SOCIAL:             return new NotAtHomeSocialContextCriteria();               // implemented
+		    case NOT_AT_HOME_SOCIAL_CINEMA:      return new NotAtHomeSocialCinemaContextCriteria();         // implemented
+		    case NOT_AT_HOME_SOCIAL_DINING:      return new NotAtHomeSocialDiningContextCriteria();         // implemented
 		    case NOT_AT_HOME_TRAVELING:          return new NotAtHomeTravelingContextCriteria();            // implemented
-		    case NOT_AT_HOME_TRAVELING_HOLIDAYS: return new NotAtHomeTravelingHolidaysContextCriteria();
-		    case NOT_AT_HOME_TRAVELING_HOME:     return new NotAtHomeTravelingHomeContextCriteria();
-		    case NOT_AT_HOME_TRAVELING_SCHOOL:   return new NotAtHomeTravelingSchoolContextCriteria();
-		    case NOT_AT_HOME_TRAVELING_SHOPPING: return new NotAtHomeTravelingShoppingContextCriteria();
-		    case NOT_AT_HOME_TRAVELING_SOCIAL:   return new NotAtHomeTravelingSocialContextCriteria();
-		    case NOT_AT_HOME_TRAVELING_WORK:     return new NotAtHomeTravelingWorkContextCriteria();
+		    case NOT_AT_HOME_TRAVELING_HOLIDAYS: return new NotAtHomeTravelingHolidaysContextCriteria();    // implemented
+		    case NOT_AT_HOME_TRAVELING_HOME:     return new NotAtHomeTravelingHomeContextCriteria();        // implemented
+		    case NOT_AT_HOME_TRAVELING_SCHOOL:   return new NotAtHomeTravelingSchoolContextCriteria();      // implemented
+		    case NOT_AT_HOME_TRAVELING_SHOPPING: return new NotAtHomeTravelingShoppingContextCriteria();    // implemented
+		    case NOT_AT_HOME_TRAVELING_SOCIAL:   return new NotAtHomeTravelingSocialContextCriteria();      // implemented
+		    case NOT_AT_HOME_TRAVELING_WORK:     return new NotAtHomeTravelingWorkContextCriteria();        // implemented
 		    case NOT_AT_HOME_WORK:               return new NotAtHomeWorkContextCriteria();                 // implemented
 		    default:
 		}

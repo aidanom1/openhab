@@ -7,8 +7,7 @@ public class NotAtHomeSocialDiningContextCriteria extends Criteria {
 
 	@Override
 	public boolean meetsCriteria(User u) {
-		// TODO Auto-generated method stub
-		return false;
+		return meetsCriteria(u,"DINING");
 	}
 
 }

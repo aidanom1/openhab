@@ -1,8 +1,13 @@
 package org.openhab.io.context.location;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.openhab.io.context.ContextService;
 import org.openhab.io.context.data_access.GeoDAO;
 import org.openhab.io.context.data_access.SQLDAO;
+import org.openhab.io.context.primitives.Context;
 import org.openhab.io.context.primitives.Location;
 import org.openhab.io.context.primitives.User;
 import org.slf4j.Logger;
@@ -45,7 +50,47 @@ public class LocationList {
 	}
 
 	
-
+    public static double distanceBetweenContexts(Context c1, Context c2) {
+    	Location l1 = c1.getLocation();
+    	Location l2 = c2.getLocation();
+        return LocationList.distance(l1.getLatitude(), l1.getLongitude(), l2.getLatitude(), l2.getLongitude(), 'K'); 
+    }
+    
+    // Checks if the user is enroute is going towards a specific Location 
+    public static boolean enrouteTo(User u, Location L) {
+		LinkedList<Context> recentContexts = u.getRecentContexts();
+		if(recentContexts.size() < 3) {return false;} // Who knows if we are travelling in this case, need 4 points
+		double distances[] = {0.0,0.0,0.0,0.0}; // 4 distances
+		distances[0] = LocationList.distance(u.getCurrentContext().getLocation().getLatitude(), 
+				                             u.getCurrentContext().getLocation().getLongitude(), 
+				                             L.getLatitude(), 
+				                             L.getLongitude(), 'K');
+		distances[1] = LocationList.distance(recentContexts.get(0).getLocation().getLatitude(), 
+				                             recentContexts.get(0).getLocation().getLongitude(), 
+				                             L.getLatitude(), 
+				                             L.getLongitude(), 'K');
+		distances[2] = LocationList.distance(recentContexts.get(1).getLocation().getLatitude(), 
+				                             recentContexts.get(1).getLocation().getLongitude(), 
+				                             L.getLatitude(), 
+				                             L.getLongitude(), 'K');
+		distances[3] = LocationList.distance(recentContexts.get(2).getLocation().getLatitude(), 
+                                             recentContexts.get(2).getLocation().getLongitude(), 
+				                             L.getLatitude(), 
+				                             L.getLongitude(), 'K');
+		
+		if(distances[0] <= distances[1] && distances[1] <= distances[2] && distances[2] <= distances[3]) return true; 
+		return false;
+    }
+    
+    public static boolean enrouteToAny(User u, ArrayList<Location> l) {
+    	Iterator<Location> it = l.iterator();
+    	while(it.hasNext()) {
+    		if(enrouteTo(u,it.next())) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 	
 	/* http://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi */
 	public static double distance(double lat1, double lon1, double lat2, double lon2, char unit) {

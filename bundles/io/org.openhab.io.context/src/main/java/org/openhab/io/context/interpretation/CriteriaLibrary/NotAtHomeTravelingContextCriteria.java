@@ -1,6 +1,5 @@
 package org.openhab.io.context.interpretation.CriteriaLibrary;
 
-import java.util.Calendar;
 import java.util.LinkedList;
 
 import org.openhab.io.context.interpretation.Criteria;
@@ -22,23 +21,14 @@ public class NotAtHomeTravelingContextCriteria extends Criteria {
 	public boolean meetsCriteria(User u) {
 		LinkedList<Context> recentContexts = u.getRecentContexts();
 		long now = System.currentTimeMillis();
-		if((u.getCurrentContext().getDate().getTimeInMillis() + (5*60*1000)) < now) { // we haven't moved in over 5 minutes, not likely to be travelling
+		if((u.getCurrentContext().getDate().getTime() + (5*60*1000)) < now) { // we haven't moved in over 5 minutes, not likely to be travelling
 			return false;
 		}
 		if(recentContexts.size() < 3) {return false;} // Who knows if we are travelling in this case, need 4 points
 		double distances[] = {0.0,0.0,0.0}; // 3 distances, 1 is allows to be 0
-		distances[0] = LocationList.distance(u.getCurrentContext().getLocation().getLatitude(), 
-				                            u.getCurrentContext().getLocation().getLongitude(), 
-				                             recentContexts.get(0).getLocation().getLatitude(), 
-				                             recentContexts.get(0).getLocation().getLongitude(), 'K');
-		distances[1] = LocationList.distance(recentContexts.get(0).getLocation().getLatitude(), 
-				                             recentContexts.get(0).getLocation().getLongitude(), 
-                                             recentContexts.get(1).getLocation().getLatitude(), 
-                                             recentContexts.get(1).getLocation().getLongitude(), 'K');	
-		distances[2] = LocationList.distance(recentContexts.get(1).getLocation().getLatitude(), 
-				                             recentContexts.get(1).getLocation().getLongitude(), 
-                                             recentContexts.get(2).getLocation().getLatitude(), 
-                                             recentContexts.get(2).getLocation().getLongitude(), 'K');
+		distances[0] = LocationList.distanceBetweenContexts(u.getCurrentContext(), recentContexts.get(0));
+		distances[1] = LocationList.distanceBetweenContexts(recentContexts.get(0), recentContexts.get(1));
+		distances[2] = LocationList.distanceBetweenContexts(recentContexts.get(1), recentContexts.get(2));
 		if(distances[0] == 0 && distances[1] == 0) return false;
 		if(distances[1] == 0 && distances[2] == 0) return false;
 		if(distances[0] == 0 && distances[2] == 0) return false;

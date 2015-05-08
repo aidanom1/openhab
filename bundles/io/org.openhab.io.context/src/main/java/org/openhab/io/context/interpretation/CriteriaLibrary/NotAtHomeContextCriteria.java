@@ -8,6 +8,10 @@ public class NotAtHomeContextCriteria extends Criteria {
 
 	@Override
 	public boolean meetsCriteria(User u) {
+		String now = String.valueOf(System.currentTimeMillis());
+		String then = String.valueOf(u.getCurrentContext().getDate().getTime());
+
+		logger.info("now = "+now+", then = "+then);
 		if(u.getRecentContexts().isEmpty()) { // No recent contexts
 			return u.getCurrentContext().getLocation().getDistanceToHome() > User.radius;
 		}
