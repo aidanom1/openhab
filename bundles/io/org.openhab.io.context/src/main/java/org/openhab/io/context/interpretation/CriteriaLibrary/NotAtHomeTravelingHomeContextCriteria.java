@@ -1,12 +1,8 @@
 package org.openhab.io.context.interpretation.CriteriaLibrary;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 import org.openhab.io.context.ContextService;
 import org.openhab.io.context.interpretation.Criteria;
 import org.openhab.io.context.location.LocationList;
-import org.openhab.io.context.primitives.Context;
 import org.openhab.io.context.primitives.Location;
 import org.openhab.io.context.primitives.User;
 

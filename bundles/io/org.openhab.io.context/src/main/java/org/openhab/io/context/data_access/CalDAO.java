@@ -39,6 +39,7 @@ public class CalDAO {
 	
 	public Event getCurrentEvent(User u) {
 		Events e = t.getUserEvents(u);
+		if(e == null) return null;
 		logger.debug(e.getSummary());
 		List<Event> items = e.getItems();
 		for (Event event : items) {

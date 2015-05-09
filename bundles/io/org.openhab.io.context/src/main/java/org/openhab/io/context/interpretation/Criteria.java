@@ -35,7 +35,7 @@ public abstract class Criteria {
 			double distance = LocationList.distance(u.getCurrentContext().getLocation().getLatitude(),
 					                                 u.getCurrentContext().getLocation().getLongitude(), 
 					                                 work[0], work[1], 'K');
-			logger.info("Distance ="+distance);
+			logger.info("Distance to "+location+" ="+distance);
 			if(distance < 100) return true;
 		}
 		return false;
@@ -59,6 +59,13 @@ public abstract class Criteria {
     	logger.debug("Getting event");
     	Event now = caldao.getCurrentEvent(u);
     	if(now == null) return false;
-    	return now.getSummary().equals(event);
+    	if(now.getSummary().equals(event)) {
+    		logger.info(now.getSummary()+" == "+event);
+    		return true;
+    	}
+    	else {
+    		logger.info(now.getSummary()+" == "+event);
+    		return false;
+    	}
     }
 }

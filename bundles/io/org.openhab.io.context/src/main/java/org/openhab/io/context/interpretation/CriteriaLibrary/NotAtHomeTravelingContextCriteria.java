@@ -21,14 +21,22 @@ public class NotAtHomeTravelingContextCriteria extends Criteria {
 	public boolean meetsCriteria(User u) {
 		LinkedList<Context> recentContexts = u.getRecentContexts();
 		long now = System.currentTimeMillis();
+		logger.info("now = "+now);
 		if((u.getCurrentContext().getDate().getTime() + (5*60*1000)) < now) { // we haven't moved in over 5 minutes, not likely to be travelling
+			logger.info("then = "+(u.getCurrentContext().getDate().getTime() + (5*60*1000)));
 			return false;
 		}
-		if(recentContexts.size() < 3) {return false;} // Who knows if we are travelling in this case, need 4 points
+		if(recentContexts.size() < 3) {
+			logger.info("not enough context "+recentContexts.size());
+			return false;
+		} // Who knows if we are travelling in this case, need 4 points
 		double distances[] = {0.0,0.0,0.0}; // 3 distances, 1 is allows to be 0
 		distances[0] = LocationList.distanceBetweenContexts(u.getCurrentContext(), recentContexts.get(0));
+		logger.info("distances[0] = "+Double.toString(distances[0]));
 		distances[1] = LocationList.distanceBetweenContexts(recentContexts.get(0), recentContexts.get(1));
+		logger.info("distances[1] = "+Double.toString(distances[1]));
 		distances[2] = LocationList.distanceBetweenContexts(recentContexts.get(1), recentContexts.get(2));
+		logger.info("distances[2] = "+Double.toString(distances[2]));
 		if(distances[0] == 0 && distances[1] == 0) return false;
 		if(distances[1] == 0 && distances[2] == 0) return false;
 		if(distances[0] == 0 && distances[2] == 0) return false;

@@ -44,31 +44,28 @@ public class ContextChangeInterpreter {
 		ContextCriteriaFactory fact = new ContextCriteriaFactory();
 		if(fact.getCriteria(ContextType.AT_HOME).meetsCriteria(u)) {
 			context = ContextType.AT_HOME;
+			logger.info("ContextType.AT_HOME;");
 			if(fact.getCriteria(ContextType.AT_HOME_SOCIAL).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_SOCIAL;
+				logger.info("ContextType.AT_HOME_SOCIAL;");
 			}
 			else if(fact.getCriteria(ContextType.AT_HOME_SLEEP).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_SLEEP;
+				logger.info("ContextType.AT_HOME_SLEEP;");
 			}
 			else if(fact.getCriteria(ContextType.AT_HOME_WORK).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_WORK;
+				logger.info("ContextType.AT_HOME_WORK;");
 			}
 			else if(fact.getCriteria(ContextType.AT_HOME_SCHOOL).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_SCHOOL;
+				logger.info("ContextType.AT_HOME_SCHOOL;");
 			}
 		}
 		else if(fact.getCriteria(ContextType.NOT_AT_HOME).meetsCriteria(u)) {
 			context = ContextType.NOT_AT_HOME;
 			logger.info("ContextType.NOT_AT_HOME;");
-			if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING).meetsCriteria(u)) {
-				logger.info("ContextType.NOT_AT_HOME_TRAVELING;");
-				context = ContextType.NOT_AT_HOME_TRAVELING;
-				
-				if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_HOME).meetsCriteria(u)) {
-					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
-				}
-			}
-			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SOCIAL).meetsCriteria(u)) {
+			if(fact.getCriteria(ContextType.NOT_AT_HOME_SOCIAL).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_SOCIAL;
 			}
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_WORK).meetsCriteria(u)) {
@@ -81,7 +78,16 @@ public class ContextChangeInterpreter {
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SHOPPING).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_SHOPPING;
 			}
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING).meetsCriteria(u)) {
+				logger.info("ContextType.NOT_AT_HOME_TRAVELING;");
+				context = ContextType.NOT_AT_HOME_TRAVELING;
+				
+				if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_HOME).meetsCriteria(u)) {
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
+				}
+			}
 		}
+		logger.info("returning "+context);
         return context;
 	}
 }

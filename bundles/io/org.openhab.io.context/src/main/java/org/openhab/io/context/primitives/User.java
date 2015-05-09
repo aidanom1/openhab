@@ -16,7 +16,8 @@ import org.slf4j.LoggerFactory;
 public class User {
 	private static final Logger logger = LoggerFactory.getLogger(ContextService.class);
 
-    private Context currentContext = null;;
+    private Context currentContext = null;
+    private ContextType highLevelContext = null;
     private String name;
     private String email;
     public static int radius;
@@ -51,6 +52,7 @@ public class User {
 
 	public boolean updateContext()
 	{
+		boolean haveNewContext = false;
 		logger.debug("Updating context");
 		ContextGenerator c =  ContextGenerator.getInstance();
 		Context newContext = c.getCurrentContext(this);
@@ -59,14 +61,15 @@ public class User {
 			recentContexts.addFirst(currentContext);
 			if(recentContexts.size() > 16) recentContexts.removeLast();
 		    currentContext = newContext; // New context!!
-	    	processContext();
-			return true;
+
+	    	haveNewContext = true;
 		} else{
 			if(ContextService.DEMO_MODE == false) {
 			    logger.info(name+" no update : distance to home is "+newContext.getLocation().getDistanceToHome());
 			}
-			return false; // no new context
 		}
+    	processContext(); // Need to process current context in case of time specific context trigger
+    	return haveNewContext;
 
 	}
 	
@@ -85,8 +88,9 @@ public class User {
 		if(currentContext.getDate() == null) return;
 		if(currentContext.getUser() == null) return;
 		ContextChangeInterpreter cci = new ContextChangeInterpreter();
-		ContextType highLevelContext = cci.getContext(this);
-		if(highLevelContext != null) {
+		ContextType hlc = cci.getContext(this);
+		if(hlc != null && hlc != this.highLevelContext) {
+			this.highLevelContext = hlc;
 			eventPublisher.postUpdate(name,highLevelContext);
 			eventPublisher.postUpdate(name+"_Context", new StringType(cci.getContextAsString(highLevelContext)));
 		}

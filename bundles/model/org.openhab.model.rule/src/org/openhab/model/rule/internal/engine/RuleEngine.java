@@ -295,7 +295,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		protected synchronized void executeRule(Rule rule, RuleEvaluationContext context) {
 			Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
 			
-			logger.debug("Executing rule '{}'", rule.getName());
+			logger.info("Executing rule '{}'", rule.getName());
 			
 			context.setGlobalContext(RuleContextHelper.getContext(rule));
 			
