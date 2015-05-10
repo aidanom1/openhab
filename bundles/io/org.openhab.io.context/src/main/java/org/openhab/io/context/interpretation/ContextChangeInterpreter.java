@@ -38,8 +38,60 @@ public class ContextChangeInterpreter {
 	}
 	
 	
-	
 	public ContextType getContext(User u) {
+		ContextType context = null;
+		ContextCriteriaFactory fact = new ContextCriteriaFactory();
+		if(fact.getCriteria(ContextType.AT_HOME).meetsCriteria(u)) {
+			context = ContextType.AT_HOME;
+			if(fact.getCriteria(ContextType.AT_HOME_SOCIAL).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_SOCIAL;
+			}
+			else if(fact.getCriteria(ContextType.AT_HOME_SLEEP).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_SLEEP;
+			}
+			else if(fact.getCriteria(ContextType.AT_HOME_WORK).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_WORK;
+			}
+			else if(fact.getCriteria(ContextType.AT_HOME_SCHOOL).meetsCriteria(u)) {
+				context = ContextType.AT_HOME_SCHOOL;
+			}
+		}
+		else if(fact.getCriteria(ContextType.NOT_AT_HOME).meetsCriteria(u)) {
+			context = ContextType.NOT_AT_HOME;
+			if(fact.getCriteria(ContextType.NOT_AT_HOME_SOCIAL).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_SOCIAL;
+			}
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_WORK).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_WORK;
+			}
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SCHOOL).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_SCHOOL;
+			}
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SHOPPING).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_SHOPPING;
+			}
+			else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING).meetsCriteria(u)) {
+				context = ContextType.NOT_AT_HOME_TRAVELING;
+				if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_HOME).meetsCriteria(u)) {
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
+				}
+				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_WORK).meetsCriteria(u)) {
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
+				}
+				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_SCHOOL).meetsCriteria(u)) {
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
+				}
+				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_SOCIAL).meetsCriteria(u)) {
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
+				}
+				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_SHOPPING).meetsCriteria(u)) {
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
+				}
+			}
+		}
+        return context;
+	}
+	public ContextType getContext1(User u) {
 		ContextType context = null;
 		ContextCriteriaFactory fact = new ContextCriteriaFactory();
 		if(fact.getCriteria(ContextType.AT_HOME).meetsCriteria(u)) {
