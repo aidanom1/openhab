@@ -88,10 +88,9 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 			
 		    ContextService.HOME_LATITUDE = Double.parseDouble(ht[0]); 
 		    ContextService.HOME_LONGITUDE = Double.parseDouble(ht[1]); 
-		    logger.info(Double.toString(ContextService.HOME_LATITUDE)+","+Double.toString(ContextService.HOME_LONGITUDE));
 		}
 		catch(Exception e) {
-			logger.info("Forgot to set location, no worries, we can pretend we're at home! "+e);
+			logger.info("Forgot to set location, no worries, we can pretend we're on Tramore Road! "+e);
 		}
 		if(users != null && config != null)
 		{

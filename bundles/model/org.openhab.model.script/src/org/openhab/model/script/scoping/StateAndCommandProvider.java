@@ -16,6 +16,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.library.types.ContextType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -56,6 +57,28 @@ public class StateAndCommandProvider {
 		STATES.add(UpDownType.DOWN);
 		STATES.add(OpenClosedType.OPEN);
 		STATES.add(OpenClosedType.CLOSED);
+		
+		STATES.add(ContextType.AT_HOME);
+		STATES.add(ContextType.AT_HOME_SOCIAL);
+		STATES.add(ContextType.AT_HOME_SLEEP);
+		STATES.add(ContextType.AT_HOME_WORK);
+		STATES.add(ContextType.AT_HOME_SCHOOL);
+		STATES.add(ContextType.NOT_AT_HOME);
+		STATES.add(ContextType.NOT_AT_HOME_TRAVELING);
+		STATES.add(ContextType.NOT_AT_HOME_TRAVELING_HOME);
+		STATES.add(ContextType.NOT_AT_HOME_TRAVELING_SOCIAL);
+		STATES.add(ContextType.NOT_AT_HOME_TRAVELING_WORK);
+		STATES.add(ContextType.NOT_AT_HOME_TRAVELING_SCHOOL);
+		STATES.add(ContextType.NOT_AT_HOME_TRAVELING_SHOPPING);
+		STATES.add(ContextType.NOT_AT_HOME_TRAVELING_HOLIDAYS);
+		STATES.add(ContextType.NOT_AT_HOME_SOCIAL);
+		STATES.add(ContextType.NOT_AT_HOME_SOCIAL_CINEMA);
+		STATES.add(ContextType.NOT_AT_HOME_SOCIAL_DINING);
+		STATES.add(ContextType.NOT_AT_HOME_WORK);
+		STATES.add(ContextType.NOT_AT_HOME_SCHOOL);
+		STATES.add(ContextType.NOT_AT_HOME_SHOPPING);
+		STATES.add(ContextType.NOT_AT_HOME_HOLIDAYS);
+
 		
 		TYPES.addAll(COMMANDS);
 		TYPES.addAll(STATES);

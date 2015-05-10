@@ -35,7 +35,6 @@ public abstract class Criteria {
 			double distance = LocationList.distance(u.getCurrentContext().getLocation().getLatitude(),
 					                                 u.getCurrentContext().getLocation().getLongitude(), 
 					                                 work[0], work[1], 'K');
-			logger.info("Distance to "+location+" ="+distance);
 			if(distance < 100) return true;
 		}
 		return false;

@@ -21,13 +21,10 @@ public class NotAtHomeTravelingContextCriteria extends Criteria {
 	public boolean meetsCriteria(User u) {
 		LinkedList<Context> recentContexts = u.getRecentContexts();
 		long now = System.currentTimeMillis();
-		logger.info("now = "+now);
 		if((u.getCurrentContext().getDate().getTime() + (5*60*1000)) < now) { // we haven't moved in over 5 minutes, not likely to be travelling
-			logger.info("then = "+(u.getCurrentContext().getDate().getTime() + (5*60*1000)));
 			return false;
 		}
 		if(recentContexts.size() < 3) {
-			logger.info("not enough context "+recentContexts.size());
 			return false;
 		} // Who knows if we are travelling in this case, need 4 points
 		double distances[] = {0.0,0.0,0.0}; // 3 distances, 1 is allows to be 0
