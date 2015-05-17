@@ -68,6 +68,7 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 	@Override
 	protected void execute() {
 		logger.debug("org.openhab.core.context.location execute");
+		logger.info("Refreshing Context");
 		for(int i = 0; i < users.size(); i++) {
 			users.get(i).updateContext();
 		}

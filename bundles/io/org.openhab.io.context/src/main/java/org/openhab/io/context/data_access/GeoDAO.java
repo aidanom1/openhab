@@ -30,6 +30,7 @@ public class GeoDAO {
 	
 	public String getOriginAddress(Location l) {
 		DistanceMatrix req = null;
+		logger.info("Executing Reverse Geocode Request");
 		try {
             req = DistanceMatrixApi.newRequest(context)
 	        .origins(new LatLng(l.getLatitude(), l.getLongitude()))
@@ -44,6 +45,7 @@ public class GeoDAO {
 	}
 	
 	public double[] getCoordinates(String address) {
+		logger.info("Executing Geocode Request for "+address);
 		GeocodingResult[] result = null;
 		try {
 			result = GeocodingApi.geocode(context, address).await();

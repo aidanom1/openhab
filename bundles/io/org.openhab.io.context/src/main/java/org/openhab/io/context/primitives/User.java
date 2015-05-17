@@ -64,9 +64,7 @@ public class User {
 
 	    	haveNewContext = true;
 		} else{
-			if(ContextService.DEMO_MODE == false) {
 			    logger.info(name+" no update : distance to home is "+newContext.getLocation().getDistanceToHome());
-			}
 		}
     	processContext(); // Need to process current context in case of time specific context trigger
     	return haveNewContext;
