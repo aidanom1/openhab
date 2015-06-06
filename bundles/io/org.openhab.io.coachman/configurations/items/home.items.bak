@@ -1,0 +1,9 @@
+Switch	Kitchen_Socket	"Kitchen Socket (RED) [%s]"	<light>	{ zwave="5:command=SWITCH_BINARY" }
+String	LOCATION	" [%s]"	<parents>
+Number	Outside_Temperature	"Temperature [%.2f °C]"	{ weather="locationId=home, type=temperature, property=current" }
+Switch	Living_Room_Socket	"Living Room Socket [%s]"	<light>	{ zwave="3:command=SWITCH_BINARY" }
+Switch	Locker_Socket	"Locker Socket (WHITE) [%s]"	<light>	{ zwave="4:command=SWITCH_BINARY" }
+String	aidan_Context	"Aidans Context [%S]"	<parents>
+String	aileen_Context	"Aileens Context [%S]"	<parents>
+User	aidan	" [%s]"	<parents>	{ user="aidan:state=ContextType" }
+User	aileen	" [%s]"	<parents>	{ user="aileen:state=ContextType" }

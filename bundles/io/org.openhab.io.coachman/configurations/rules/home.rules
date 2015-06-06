@@ -1,0 +1,104 @@
+import org.openhab.core.library.types.*
+import org.openhab.model.script.actions.*
+
+/*********************************************************
+ * Acceptable states for users are
+ * AT_HOME,
+ * AT_HOME_SOCIAL,
+ * AT_HOME_SLEEP,
+ * AT_HOME_WORK,
+ * AT_HOME_SCHOOL,
+ * NOT_AT_HOME,
+ * NOT_AT_HOME_TRAVELING,
+ * NOT_AT_HOME_TRAVELING_HOME,
+ * NOT_AT_HOME_TRAVELING_SOCIAL,
+ * NOT_AT_HOME_TRAVELING_WORK,
+ * NOT_AT_HOME_TRAVELING_SCHOOL,
+ * NOT_AT_HOME_TRAVELING_SHOPPING,
+ * NOT_AT_HOME_TRAVELING_HOLIDAYS,
+ * NOT_AT_HOME_SOCIAL,
+ * NOT_AT_HOME_SOCIAL_CINEMA,
+ * NOT_AT_HOME_SOCIAL_DINING,
+ * NOT_AT_HOME_WORK,
+ * NOT_AT_HOME_SCHOOL,
+ * NOT_AT_HOME_SHOPPING,
+ * NOT_AT_HOME_HOLIDAYS,
+ ********************************************************/
+
+rule "Rule 1 - turn off sockets when nobody at home"
+when
+        Item aileen received update or
+        Item aidan received update 
+then
+        if(aidan.state != AT_HOME && aileen.state != AT_HOME) {
+            sendCommand(Kitchen_Socket,OFF)
+            sendCommand(Locker_Socket,OFF)
+            sendCommand(Bedroom_Socket,OFF)
+        }
+end
+
+rule "Rule 2 - turn off sockets when everyone asleep"
+when
+        Item aileen received update or
+        Item aidan received update 
+then
+        if(aidan.state == AT_HOME_SLEEP && aileen.state == AT_HOME_SLEEP) {
+            sendCommand(Kitchen_Socket,OFF)
+            sendCommand(Locker_Socket,OFF)
+            sendCommand(Bedroom_Socket,OFF)
+        }
+end
+
+rule "Rule 3 - turn on sockets when someone at home"
+when
+	Item aidan received update or
+        Item aileen received update
+then
+        if(aileen.state == AT_HOME || aidan.state == AT_HOME) {
+            logInfo("rule3","Match for Rule3 - at least one user is at home, turn on kitchen socket (RED) and locker socket (WHITE)")
+	    sendCommand(Kitchen_Socket,ON)
+	    sendCommand(Locker_Socket,ON)
+        }
+end
+
+rule "Rule 4 - turn on heating when everyone on holidays and temperature falls below -3 degrees"
+when
+	Item Outside_Temperature received update
+then
+        if(Outside_Temperature.state instanceof DecimalType) {
+        var temp = Outside_Temperature.state
+        if(aileen.state == NOT_AT_HOME_HOLIDAYS &&
+           aidan.state  == NOT_AT_HOME_HOLIDAYS &&
+           temp < -3) {
+               sendCommand(Bedroom_Socket,ON)
+            }
+        }
+end
+
+rule "Rule 5 - turn on air conditioning if someone at home and temperature goes above 20 degrees"
+when
+	Item Outside_Temperature received update
+then
+        var temp = Outside_Temperature.state as DecimalType
+        if((aileen.state == AT_HOME ||
+            aidan.state  == AT_HOME) &&
+           temp > 20) {
+           sendCommand(Bedroom_Socket,ON)
+        }
+end
+
+rule "Rule 6 - turn on heating if someone is coming home and its cold"
+when
+	Item aidan received update or
+        Item aileen received update
+then
+        if(Outside_Temperature.state instanceof DecimalType) {
+            var temp = Outside_Temperature.state as DecimalType
+            if((aileen.state == NOT_AT_HOME_TRAVELING_HOME || 
+                aidan.state == NOT_AT_HOME_TRAVELING_HOME) &&
+                temp < 10) {
+	        sendCommand(Kitchen_Socket,ON)
+	        sendCommand(Locker_Socket,ON)
+            }
+        }
+end

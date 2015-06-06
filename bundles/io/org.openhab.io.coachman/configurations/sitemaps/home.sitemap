@@ -1,0 +1,9 @@
+sitemap home label="Main Menu"
+{
+	Switch item=Kitchen_Socket label="Kitchen Socket (RED)" 	
+	Switch item=Bedroom_Socket label="Bedroom Socket (BLUE)" 	
+	Switch item=Locker_Socket label="Locker Socket (WHITE)" 	
+	Text item=Outside_Temperature label="Outside Temperature [%.2f °C]" 	
+	Text item=aidan_Context label="Aidans Context [%S]" 	
+	Text item=aileen_Context label="Aileens Context [%S]" 	
+}
