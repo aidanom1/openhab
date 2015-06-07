@@ -58,13 +58,6 @@ public abstract class Criteria {
     	logger.debug("Getting event");
     	Event now = caldao.getCurrentEvent(u);
     	if(now == null) return false;
-    	if(now.getSummary().equals(event)) {
-    		logger.info(now.getSummary()+" == "+event);
-    		return true;
-    	}
-    	else {
-    		logger.info(now.getSummary()+" == "+event);
-    		return false;
-    	}
+    	return (now.getSummary().equals(event));
     }
 }

@@ -31,18 +31,19 @@ when
         Item aidan received update 
 then
         if(aidan.state != AT_HOME && aileen.state != AT_HOME) {
+            logInfo("rule1","Match for Rule1 - nobody at home, turn off all sockets")
             sendCommand(Kitchen_Socket,OFF)
             sendCommand(Locker_Socket,OFF)
             sendCommand(Bedroom_Socket,OFF)
         }
 end
-
 rule "Rule 2 - turn off sockets when everyone asleep"
 when
         Item aileen received update or
         Item aidan received update 
 then
         if(aidan.state == AT_HOME_SLEEP && aileen.state == AT_HOME_SLEEP) {
+            logInfo("rule2","Match for Rule2 - everyone asleep, turn off all sockets")
             sendCommand(Kitchen_Socket,OFF)
             sendCommand(Locker_Socket,OFF)
             sendCommand(Bedroom_Socket,OFF)
@@ -70,6 +71,7 @@ then
         if(aileen.state == NOT_AT_HOME_HOLIDAYS &&
            aidan.state  == NOT_AT_HOME_HOLIDAYS &&
            temp < -3) {
+            logInfo("rule4","Match for Rule4 - everyone on holidays and below freezing, turn on heating (blue bedroom socket)")
                sendCommand(Bedroom_Socket,ON)
             }
         }
@@ -83,7 +85,8 @@ then
         if((aileen.state == AT_HOME ||
             aidan.state  == AT_HOME) &&
            temp > 20) {
-           sendCommand(Bedroom_Socket,ON)
+            logInfo("rule5","Match for Rule5 - very hot and someone at home, turn on aircon (red kitchen socket)")
+           sendCommand(Kitchen_Socket,ON)
         }
 end
 
@@ -97,8 +100,20 @@ then
             if((aileen.state == NOT_AT_HOME_TRAVELING_HOME || 
                 aidan.state == NOT_AT_HOME_TRAVELING_HOME) &&
                 temp < 10) {
+                logInfo("rule6","Match for Rule6 - turn on heating (red and white sockets) when someone coming home and it is cold")
 	        sendCommand(Kitchen_Socket,ON)
 	        sendCommand(Locker_Socket,ON)
             }
+        }
+end
+
+rule "Rule 7 - turn on study lights when any user is working from home"
+when
+	Item aidan received update or
+        Item aileen received update
+then
+        if(aileen.state == AT_HOME_WORK || aidan.state == AT_HOME_WORK) {
+            logInfo("rule7","Match for Rule 7 - someone is working from home, turn on study lights (BLUE)")
+            sendCommand(Bedroom_Socket,ON)
         }
 end

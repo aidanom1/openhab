@@ -78,7 +78,6 @@ public class ContextService extends AbstractActiveService implements ManagedServ
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException
 	{
-		logger.debug("org.openhab.core.context.location updated");
 		if(Boolean.parseBoolean(((String) config.get("demo_mode")))) {
 			ContextService.DEMO_MODE = true;
 			ContextService.refreshInterval = 10000;
