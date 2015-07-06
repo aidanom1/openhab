@@ -37,6 +37,11 @@ public class CalDAO {
 		return false;
 	}
 	
+	/*************************************
+	 * 
+	 * @param u - User object 
+	 * @return Event - Current event for User u
+	 */
 	public Event getCurrentEvent(User u) {
 		Events e = t.getUserEvents(u);
 		if(e == null) return null;

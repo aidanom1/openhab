@@ -46,6 +46,10 @@ public class SQLDAO {
 		return instance;
 	}
 	
+	/**********************************************
+	 * This function stores a Context object into
+	 * a database
+	 */
 	public boolean logUserContext(Context c) {
 		SimpleDateFormat f = new SimpleDateFormat("EEE HH:mm:ss dd/MM/yyyy");
         String query = "insert into context (user,time,location,activity) values ('"+
@@ -56,6 +60,9 @@ public class SQLDAO {
         return executeInsertQuery(query);
 	}
 	
+	/***********************************************
+	 * Get the current Location for a user
+	 */
 	public String getUserLocation(User u) {
 		String query = "select Time,Value from Item12 where (Value REGEXP '.*"+u.getName()+"$')";
 		ResultSet t = executeSelectQuery(query);
@@ -72,10 +79,13 @@ public class SQLDAO {
 		return temp;
 	}
 	
-	public void logEvent(User u2, String summary, String location, double lat,
-			double lng) {
+	/**********************************************
+	 * Logs an event associated with a user. The events
+	 * location and summary are stored
+	 */
+	public void logEvent(User user2, String summary, String location, double lat, double lng) {
         String query = "insert into MASTERLOCATIONLIST (user,category,address,lng,lat) values " +
-        		"('"+u2.getName()+"','"+
+        		"('"+user2.getName()+"','"+
         		summary+"','"+
         		location+"',"+String.valueOf(lat)+","+String.valueOf(lng)+")";
         executeInsertQuery(query);
@@ -83,8 +93,11 @@ public class SQLDAO {
 	}
 	
 
-	public ArrayList<double[]> getLocations(String string, User u) {
-		String query = "select lng,lat from MASTERLOCATIONLIST where user='"+u.getName()+"' and category='"+string+"'";
+	/************************************************
+	 * Gets all locations of a certain category for a user
+	 */
+	public ArrayList<double[]> getLocations(String category, User u) {
+		String query = "select lng,lat from MASTERLOCATIONLIST where user='"+u.getName()+"' and category='"+category+"'";
 		ResultSet t = executeSelectQuery(query);
 		ArrayList<double[]> locations = new ArrayList<double[]>();
 		try {
@@ -101,6 +114,9 @@ public class SQLDAO {
 	
 	/**********************************************************************************************************/
 	
+	/*******************************************
+	 * Generic execute select
+	 */
 	private ResultSet executeSelectQuery(String query) {
 		try {
 
@@ -113,7 +129,9 @@ public class SQLDAO {
 	}
 		return null;
 	}
-	
+	/*******************************************
+	 * Generic execute insert
+	 */	
 	private boolean executeInsertQuery(String query) {
 		try {
 	        st = connection.createStatement();

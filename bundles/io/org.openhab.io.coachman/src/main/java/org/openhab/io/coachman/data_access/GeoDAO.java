@@ -28,6 +28,13 @@ public class GeoDAO {
 		context =  new GeoApiContext().setApiKey("AIzaSyBGAZA2p6mbK9k2LGNJji_U1BK1dancDnc");
 	}
 	
+	/*******************************************
+	 * This function makes use of reverse Geocoding
+	 * 
+	 * @param l - A Location object
+	 * @return A String representation of the 
+	 *          Location object
+	 */
 	public String getOriginAddress(Location l) {
 		DistanceMatrix req = null;
 		logger.info("Executing Reverse Geocode Request");
@@ -44,6 +51,12 @@ public class GeoDAO {
 		return req.originAddresses[0];
 	}
 	
+	/********************************************
+	 * This function makes use of Geocoding
+	 * 
+	 * @param address as a String
+	 * @return longitude and latitude of the address
+	 */
 	public double[] getCoordinates(String address) {
 		logger.info("Executing Geocode Request for "+address);
 		GeocodingResult[] result = null;
