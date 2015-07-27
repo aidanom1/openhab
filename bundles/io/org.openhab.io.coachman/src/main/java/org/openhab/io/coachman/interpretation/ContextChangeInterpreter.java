@@ -43,68 +43,53 @@ public class ContextChangeInterpreter {
 		ContextCriteriaFactory fact = new ContextCriteriaFactory();
 		if(fact.getCriteria(ContextType.AT_HOME).meetsCriteria(u)) {
 			context = ContextType.AT_HOME;
-			logger.info(u.getName()+" is "+getContextAsString(context));
 			if(fact.getCriteria(ContextType.AT_HOME_SOCIAL).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_SOCIAL;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 			else if(fact.getCriteria(ContextType.AT_HOME_SLEEP).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_SLEEP;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 			else if(fact.getCriteria(ContextType.AT_HOME_WORK).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_WORK;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 			else if(fact.getCriteria(ContextType.AT_HOME_SCHOOL).meetsCriteria(u)) {
 				context = ContextType.AT_HOME_SCHOOL;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 		}
 		else if(fact.getCriteria(ContextType.NOT_AT_HOME).meetsCriteria(u)) {
 			context = ContextType.NOT_AT_HOME;
-			logger.info(u.getName()+" is "+getContextAsString(context));
 			if(fact.getCriteria(ContextType.NOT_AT_HOME_SOCIAL).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_SOCIAL;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_WORK).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_WORK;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SCHOOL).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_SCHOOL;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_SHOPPING).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_SHOPPING;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 			}
 			else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING).meetsCriteria(u)) {
 				context = ContextType.NOT_AT_HOME_TRAVELING;
-				logger.info(u.getName()+" is "+getContextAsString(context));
 				if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_HOME).meetsCriteria(u)) {
 					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
-					logger.info(u.getName()+" is "+getContextAsString(context));
 				}
 				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_WORK).meetsCriteria(u)) {
 					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
-					logger.info(u.getName()+" is "+getContextAsString(context));
 				}
 				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_SCHOOL).meetsCriteria(u)) {
 					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
-					logger.info(u.getName()+" is "+getContextAsString(context));
 				}
 				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_SOCIAL).meetsCriteria(u)) {
 					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
-					logger.info(u.getName()+" is "+getContextAsString(context));
 				}
 				else if(fact.getCriteria(ContextType.NOT_AT_HOME_TRAVELING_SHOPPING).meetsCriteria(u)) {
-					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;
-					logger.info(u.getName()+" is "+getContextAsString(context));
+					context = ContextType.NOT_AT_HOME_TRAVELING_HOME;					
 				}
 			}
 		}
+		logger.info(u.getName()+" is "+getContextAsString(context));
         return context;
 	}
 	public ContextType getContext1(User u) {

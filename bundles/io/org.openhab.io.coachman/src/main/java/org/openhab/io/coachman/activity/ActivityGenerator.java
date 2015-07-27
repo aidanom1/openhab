@@ -57,6 +57,7 @@ public class ActivityGenerator {
 	}
 
 	public Activity getUserActivity(User u) {
+		logger.info("Fetching current event for "+u.getName());
 		Event e = caldao.getCurrentEvent(u);
 		Activity a = new Activity();
 		if (e == null)

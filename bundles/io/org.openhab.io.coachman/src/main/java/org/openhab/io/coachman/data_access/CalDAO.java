@@ -47,7 +47,7 @@ public class CalDAO {
 		if(e == null) return null;
 		logger.debug(e.getSummary());
 		List<Event> items = e.getItems();
-		logger.info("Fetching current event for "+u.getName());
+
 		for (Event event : items) {
 			logger.debug(event.getSummary());
 			EventDateTime start = event.getStart();

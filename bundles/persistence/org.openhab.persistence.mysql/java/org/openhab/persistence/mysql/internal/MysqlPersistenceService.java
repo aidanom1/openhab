@@ -353,7 +353,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
 		if (errReconnectThreshold != 0 && errCnt >= errReconnectThreshold) {
-			logger.error("mySQL: Error count exceeded {}. Disconnecting database.", errReconnectThreshold);
+			//logger.error("mySQL: Error count exceeded {}. Disconnecting database.", errReconnectThreshold);
 			disconnectFromDatabase();
 		}
 		return connection != null;
