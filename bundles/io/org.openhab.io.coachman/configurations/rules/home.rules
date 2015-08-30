@@ -33,10 +33,12 @@ then
         if(aidan.state != AT_HOME && aileen.state != AT_HOME) {
             logInfo("rule1","Match for Rule1 - nobody at home, turn off all sockets")
             sendCommand(Kitchen_Socket,OFF)
-            sendCommand(Locker_Socket,OFF)
-            sendCommand(Bedroom_Socket,OFF)
+            sendCommand(Bathroom_Socket,OFF)
+            sendCommand(Study_Socket,OFF)
         }
 end
+
+
 rule "Rule 2 - turn off sockets when everyone asleep"
 when
         Item aileen received update or
@@ -113,7 +115,8 @@ when
         Item aileen received update
 then
         if(aileen.state == AT_HOME_WORK || aidan.state == AT_HOME_WORK) {
-            logInfo("rule7","Match for Rule 7 - someone is working from home, turn on study lights (BLUE)")
-            sendCommand(Bedroom_Socket,ON)
+            logInfo("rule7","Match for Rule 7 - someone is working from home, turn 
+			on study lights (RED)")
+            sendCommand(Study_Socket,ON)
         }
 end

@@ -14,7 +14,7 @@ public class AtHomeContextCriteria extends Criteria{
 	 */
 	@Override
 	public boolean meetsCriteria(User u) {
-		return u.getCurrentContext().getLocation().getDistanceToHome() < User.radius;
+		return u.getCurrentContext().getLocation().getDistanceToHome() <= User.radius;
 	}
 
 }

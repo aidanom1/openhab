@@ -60,12 +60,14 @@ public class GeoDAO {
 	public double[] getCoordinates(String address) {
 		logger.info("Executing Geocode Request for "+address);
 		GeocodingResult[] result = null;
+		double coord[] = {0.0,0.0};
 		try {
 			result = GeocodingApi.geocode(context, address).await();
+			coord[0] = result[0].geometry.location.lat;
+			coord[1] = result[0].geometry.location.lng;
 		} catch (Exception e1) {
 			logger.debug(e1.getMessage());
 		}
-		double coord[] = {result[0].geometry.location.lat, result[0].geometry.location.lng};
         return coord;
 	}
 }
